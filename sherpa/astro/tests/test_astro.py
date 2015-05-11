@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -26,6 +26,7 @@ from sherpa.astro.data import DataPHA
 
 logger = logging.getLogger('sherpa')
 
+
 class test_threads(SherpaTestCase):
 
     def setUp(self):
@@ -33,7 +34,7 @@ class test_threads(SherpaTestCase):
         try:
             import sherpa.astro.io
             if ("sherpa.astro.io.crates_backend" ==
-                sherpa.astro.io.backend.__name__):
+                    sherpa.astro.io.backend.__name__):
                 self.is_crates_io = True
         except:
             self.is_crates_io = False
@@ -57,7 +58,6 @@ class test_threads(SherpaTestCase):
         os.chdir(os.path.join(self.datadir, 'ciao4.3', name))
         execfile(scriptname, {}, self.locals)
 
-
     @needs_data
     def test_pha_intro(self):
         self.run_thread('pha_intro')
@@ -73,22 +73,22 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(ui.calc_energy_flux(), 9.614847e-13, 1e-4)
         self.assertEqualWithinTol(ui.calc_data_sum(), 706.85714092, 1e-4)
         self.assertEqualWithinTol(ui.calc_model_sum(), 638.45693377, 1e-4)
-        self.assertEqualWithinTol(ui.calc_source_sum(),0.046996409, 1e-4)
+        self.assertEqualWithinTol(ui.calc_source_sum(), 0.046996409, 1e-4)
         self.assertEqualWithinTol(ui.eqwidth(self.locals['p1'],
-                                             ui.get_source()),-0.57731725, 1e-4)
-        self.assertEqualWithinTol(ui.calc_kcorr([1,1.2,1.4,1.6,1.8,2], 0.5, 2),
-                                  [0.93341286,0.93752836,0.94325233,
-                                   0.94990140,0.95678054,0.96393515], 1e-4)
+                                             ui.get_source()), -0.57731725, 1e-4)
+        self.assertEqualWithinTol(ui.calc_kcorr([1, 1.2, 1.4, 1.6, 1.8, 2], 0.5, 2),
+                                  [0.93341286, 0.93752836, 0.94325233,
+                                   0.94990140, 0.95678054, 0.96393515], 1e-4)
 
-        self.assertEqual(ui.get_fit_results().nfev,22)
-        self.assertEqual(ui.get_fit_results().numpoints,44)
-        self.assertEqual(ui.get_fit_results().dof,42)
+        self.assertEqual(ui.get_fit_results().nfev, 22)
+        self.assertEqual(ui.get_fit_results().numpoints, 44)
+        self.assertEqual(ui.get_fit_results().dof, 42)
 
     @needs_data
     def test_pha_read(self):
         self.run_thread('pha_read')
         self.assertEqual(type(ui.get_data()), DataPHA)
-        
+
     @needs_data
     def test_basic(self):
         # In data1.dat for this test, there is a comment with one
@@ -105,10 +105,10 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['m1'].c3.val, -0.00277729, 1e-4)
         self.assertEqualWithinTol(self.locals['m2'].c0.val, 1.75548, 1e-4)
         self.assertEqualWithinTol(self.locals['m2'].c1.val, 0.198455, 1e-4)
-        self.assertEqual(ui.get_fit_results().nfev,9)
-        self.assertEqual(ui.get_fit_results().numpoints,11)
-        self.assertEqual(ui.get_fit_results().dof,9)
-                
+        self.assertEqual(ui.get_fit_results().nfev, 9)
+        self.assertEqual(ui.get_fit_results().numpoints, 11)
+        self.assertEqual(ui.get_fit_results().dof, 9)
+
     @needs_data
     def test_simultaneous(self):
         self.run_thread('simultaneous')
@@ -119,8 +119,8 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['pl1'].gamma.val, 1.645, 1e-4)
         self.assertEqualWithinTol(self.locals['pl1'].ampl.val, 2.28323e-05, 1e-3)
         self.assertEqualWithinTol(self.locals['pl2'].ampl.val, 2.44585e-05, 1e-3)
-        self.assertEqual(ui.get_fit_results().numpoints,18)
-        self.assertEqual(ui.get_fit_results().dof,14)
+        self.assertEqual(ui.get_fit_results().numpoints, 18)
+        self.assertEqual(ui.get_fit_results().dof, 14)
 
     @needs_data
     def test_sourceandbg(self):
@@ -133,8 +133,8 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['b1'].norm.val, 0.00953809, 1e-2)
         self.assertEqualWithinTol(self.locals['b2'].kt.val, 0.563109, 1e-2)
         self.assertEqualWithinTol(self.locals['b2'].norm.val, 1.16118e-05, 1e-2)
-        self.assertEqual(ui.get_fit_results().numpoints,1330)
-        self.assertEqual(ui.get_fit_results().dof,1325)
+        self.assertEqual(ui.get_fit_results().numpoints, 1330)
+        self.assertEqual(ui.get_fit_results().dof, 1325)
 
     @needs_data
     def test_spatial(self):
@@ -148,10 +148,10 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['g2'].xpos.val, 4070.78, 1e-4)
         self.assertEqualWithinTol(self.locals['g2'].ypos.val, 4249.33, 1e-4)
         self.assertEqualWithinTol(self.locals['g2'].ampl.val, 226.563, 1e-4)
-        #self.assertEqual(ui.get_fit_results().nfev,371)
-        self.assertEqual(ui.get_fit_results().numpoints,4881)
-        self.assertEqual(ui.get_fit_results().dof,4877)
-        
+        # self.assertEqual(ui.get_fit_results().nfev,371)
+        self.assertEqual(ui.get_fit_results().numpoints, 4881)
+        self.assertEqual(ui.get_fit_results().dof, 4877)
+
     @needs_data
     def test_pileup(self):
         self.run_thread('pileup')
@@ -163,9 +163,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['abs1'].nh.val, 6.12101, 1e-2)
         self.assertEqualWithinTol(self.locals['power'].gamma.val, 1.41887, 1e-2)
         self.assertEqualWithinTol(self.locals['power'].ampl.val, 0.00199457, 1e-2)
-        self.assertEqual(ui.get_fit_results().numpoints,42)
-        self.assertEqual(ui.get_fit_results().dof,37)
-    
+        self.assertEqual(ui.get_fit_results().numpoints, 42)
+        self.assertEqual(ui.get_fit_results().dof, 37)
+
     @needs_data
     def test_radpro(self):
         self.run_thread('radpro')
@@ -176,9 +176,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['src'].beta.val, 4.1633, 1e-4)
         self.assertEqualWithinTol(self.locals['src'].xpos.val, 0.0, 1e-4)
         self.assertEqualWithinTol(self.locals['src'].ampl.val, 4.42821, 1e-4)
-        self.assertEqual(ui.get_fit_results().nfev,92)
-        self.assertEqual(ui.get_fit_results().numpoints,38)
-        self.assertEqual(ui.get_fit_results().dof,35)
+        self.assertEqual(ui.get_fit_results().nfev, 92)
+        self.assertEqual(ui.get_fit_results().numpoints, 38)
+        self.assertEqual(ui.get_fit_results().dof, 35)
 
     @needs_data
     def test_radpro_dm(self):
@@ -197,9 +197,9 @@ class test_threads(SherpaTestCase):
             self.assertEqualWithinTol(self.locals['src'].beta.val, 4.1633, 1e-4)
             self.assertEqualWithinTol(self.locals['src'].xpos.val, 0.0, 1e-4)
             self.assertEqualWithinTol(self.locals['src'].ampl.val, 4.42821, 1e-4)
-            self.assertEqual(ui.get_fit_results().nfev,92)
-            self.assertEqual(ui.get_fit_results().numpoints,38)
-            self.assertEqual(ui.get_fit_results().dof,35)
+            self.assertEqual(ui.get_fit_results().nfev, 92)
+            self.assertEqual(ui.get_fit_results().numpoints, 38)
+            self.assertEqual(ui.get_fit_results().dof, 35)
 
     @needs_data
     def test_psf2d(self):
@@ -209,9 +209,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['g1'].ypos.val, 77.2271, 1e-2)
         self.assertEqualWithinTol(self.locals['g1'].xpos.val, 88.661, 1e-2)
         self.assertEqualWithinTol(self.locals['g1'].ampl.val, 166.649, 1e-2)
-        #self.assertEqual(ui.get_fit_results().nfev,342)
-        self.assertEqual(ui.get_fit_results().numpoints,4899)
-        self.assertEqual(ui.get_fit_results().dof,4895)
+        # self.assertEqual(ui.get_fit_results().nfev,342)
+        self.assertEqual(ui.get_fit_results().numpoints, 4899)
+        self.assertEqual(ui.get_fit_results().dof, 4895)
 
     @needs_data
     def test_fpsf2d(self):
@@ -226,9 +226,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['g1'].xpos.val, 88.940712, 1e-4)
         self.assertEqualWithinTol(self.locals['g1'].ypos.val, 76.577265, 1e-4)
         self.assertEqualWithinTol(self.locals['g1'].ampl.val, 36344.48324, 1e-4)
-        #self.assertEqual(ui.get_fit_results().nfev,978)
-        self.assertEqual(ui.get_fit_results().numpoints,4899)
-        self.assertEqual(ui.get_fit_results().dof,4895)
+        # self.assertEqual(ui.get_fit_results().nfev,978)
+        self.assertEqual(ui.get_fit_results().numpoints, 4899)
+        self.assertEqual(ui.get_fit_results().dof, 4895)
 
     @needs_data
     def test_radpro_psf(self):
@@ -237,10 +237,10 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['src'].r0.val, 83.0997, 1e-4)
         self.assertEqualWithinTol(self.locals['src'].beta.val, 2.97737, 1e-4)
         self.assertEqualWithinTol(self.locals['src'].ampl.val, 5.27604, 1e-4)
-        self.assertEqual(ui.get_fit_results().nfev,48)
-        self.assertEqual(ui.get_fit_results().numpoints,38)
-        self.assertEqual(ui.get_fit_results().dof,35)
-        
+        self.assertEqual(ui.get_fit_results().nfev, 48)
+        self.assertEqual(ui.get_fit_results().numpoints, 38)
+        self.assertEqual(ui.get_fit_results().dof, 35)
+
     @needs_data
     def test_linepro(self):
         self.run_thread('linepro')
@@ -248,9 +248,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['b1'].r0.val, 4.25557, 1e-4)
         self.assertEqualWithinTol(self.locals['b1'].beta.val, 0.492232, 1e-4)
         self.assertEqualWithinTol(self.locals['b1'].ampl.val, 11.8129, 1e-4)
-        self.assertEqual(ui.get_fit_results().nfev,17)
-        self.assertEqual(ui.get_fit_results().numpoints,75)
-        self.assertEqual(ui.get_fit_results().dof,72)
+        self.assertEqual(ui.get_fit_results().nfev, 17)
+        self.assertEqual(ui.get_fit_results().numpoints, 75)
+        self.assertEqual(ui.get_fit_results().dof, 72)
 
     @needs_data
     def test_kernel(self):
@@ -259,9 +259,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['b1'].r0.val, 19.2278, 1e-4)
         self.assertEqualWithinTol(self.locals['b1'].beta.val, 0.555464, 1e-4)
         self.assertEqualWithinTol(self.locals['b1'].ampl.val, 1.93706, 1e-4)
-        self.assertEqual(ui.get_fit_results().nfev,21)
-        self.assertEqual(ui.get_fit_results().numpoints,75)
-        self.assertEqual(ui.get_fit_results().dof,72)
+        self.assertEqual(ui.get_fit_results().nfev, 21)
+        self.assertEqual(ui.get_fit_results().numpoints, 75)
+        self.assertEqual(ui.get_fit_results().dof, 72)
 
     @needs_data
     def test_spectrum(self):
@@ -272,8 +272,8 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['mek1'].norm.val, 0.699761, 1e-4)
         self.assertEqualWithinTol(self.locals['mek2'].kt.val, 2.35845, 1e-4)
         self.assertEqualWithinTol(self.locals['mek2'].norm.val, 1.03724, 1e-4)
-        self.assertEqual(ui.get_fit_results().numpoints,446)
-        self.assertEqual(ui.get_fit_results().dof,441)
+        self.assertEqual(ui.get_fit_results().numpoints, 446)
+        self.assertEqual(ui.get_fit_results().dof, 441)
 
     @needs_data
     def test_histo(self):
@@ -282,9 +282,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['g1'].fwhm.val, 0.0232473, 1e-4)
         self.assertEqualWithinTol(self.locals['g1'].pos.val, 1.26713, 1e-4)
         self.assertEqualWithinTol(self.locals['g1'].ampl.val, 40.4503, 1e-4)
-        #self.assertEqual(ui.get_fit_results().nfev,19)
-        self.assertEqual(ui.get_fit_results().numpoints,50)
-        self.assertEqual(ui.get_fit_results().dof,47)
+        # self.assertEqual(ui.get_fit_results().nfev,19)
+        self.assertEqual(ui.get_fit_results().numpoints, 50)
+        self.assertEqual(ui.get_fit_results().dof, 47)
 
     @needs_data
     def test_xmm(self):
@@ -293,9 +293,9 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(self.locals['intrin'].nh.val, 11.0769, 1e-2)
         self.assertEqualWithinTol(self.locals['phard'].phoindex.val, 1.49055, 1e-2)
         self.assertEqualWithinTol(self.locals['phard'].norm.val, 0.00140301, 1e-2)
-        self.assertEqual(ui.get_fit_results().nfev,95)
-        self.assertEqual(ui.get_fit_results().numpoints,162)
-        self.assertEqual(ui.get_fit_results().dof,159)
+        self.assertEqual(ui.get_fit_results().nfev, 95)
+        self.assertEqual(ui.get_fit_results().numpoints, 162)
+        self.assertEqual(ui.get_fit_results().dof, 159)
 
     @needs_data
     # As of CIAO 4.5, can filter on channel number, even when
@@ -406,8 +406,8 @@ class test_threads(SherpaTestCase):
         self.assertEqualWithinTol(ui.get_proj_results().parmaxes[1],
                                   2.403640e-06, 1e-2)
 
-    ### New tests based on SDS threads -- we should catch these errors
-    ### (if any occur) so SDS doesn't waste time tripping over them.
+    # New tests based on SDS threads -- we should catch these errors
+    # (if any occur) so SDS doesn't waste time tripping over them.
     @needs_data
     def test_counts(self):
         self.run_thread('counts')
@@ -422,14 +422,14 @@ class test_threads(SherpaTestCase):
     @needs_data
     def test_stats_all(self):
         self.run_thread('stats_all')
-        self.assertEqualWithinTol(self.locals['stat_lsqr'],213746.236464,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_chi2m'],1232.0330242,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_cash'],-1163566.90688,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_chi2c'],1411.60090961,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_chi2g'],972.388468358,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_chi2d'],1204.69363458,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_chi2x'],1204.69363458,1e-4)
-        self.assertEqualWithinTol(self.locals['stat_cstat'],1210.56896183,1e-4)
+        self.assertEqualWithinTol(self.locals['stat_lsqr'], 213746.236464, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_chi2m'], 1232.0330242, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_cash'], -1163566.90688, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_chi2c'], 1411.60090961, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_chi2g'], 972.388468358, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_chi2d'], 1204.69363458, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_chi2x'], 1204.69363458, 1e-4)
+        self.assertEqualWithinTol(self.locals['stat_cstat'], 1210.56896183, 1e-4)
 
     @needs_data
     def test_lev3fft(self):

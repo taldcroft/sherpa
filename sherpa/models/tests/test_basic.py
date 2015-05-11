@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -22,8 +22,10 @@ import sherpa.models.basic as basic
 from sherpa.utils import SherpaFloat, SherpaTestCase
 from sherpa.models.model import ArithmeticModel
 
+
 def userfunc(pars, x, *args, **kwargs):
     return x
+
 
 class test_basic(SherpaTestCase):
 
@@ -35,8 +37,8 @@ class test_basic(SherpaTestCase):
             clsobj = getattr(basic, cls)
 
             if ((not isinstance(clsobj, type)) or
-                (not issubclass(clsobj, ArithmeticModel)) or
-                (clsobj is ArithmeticModel)):
+                    (not issubclass(clsobj, ArithmeticModel)) or
+                    (clsobj is ArithmeticModel)):
                 continue
 
             # These have very different interfaces than the others
@@ -45,22 +47,22 @@ class test_basic(SherpaTestCase):
 
             m = clsobj()
             if isinstance(m, basic.TableModel):
-                m.load(x,x)
+                m.load(x, x)
             if isinstance(m, basic.UserModel):
-                m.calc = userfunc 
+                m.calc = userfunc
             self.assertEqual(type(m).__name__.lower(), m.name)
             count += 1
 
             try:
                 if m.name.count('2d'):
-                    pt_out  = m(x, x)
+                    pt_out = m(x, x)
                     int_out = m(x, x, x, x)
                 else:
                     if m.name in ('log', 'log10'):
                         xx = -x
                     else:
                         xx = x
-                    pt_out  = m(xx)
+                    pt_out = m(xx)
                     int_out = m(xx, xx)
             except ValueError:
                 self.fail("evaluation of model '%s' failed" % cls)

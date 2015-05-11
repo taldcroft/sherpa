@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007,2014,2015  Smithsonian Astrophysical Observatory
 #
 #
@@ -40,13 +40,14 @@ import os.path
 import sys
 
 
-
 __all__ = ('banner', 'get_include', 'test')
 
 __versionstr__ = '4.7.1'
 __version__ = 40701
 
+
 class Formatter(logging.Formatter):
+
     def format(self, record):
         if record.levelno > logging.INFO:
             msg = '%s: %s' % (record.levelname, record.msg)
@@ -75,14 +76,17 @@ def _banner_fancy(file=sys.stdout):
     "Print a welcome message to the specified file object"
     print >> file, _banner
 
+
 def banner(file=sys.stdout):
     "No-op function; override with fancier version if desired to print banner"
     pass
 
+
 def get_include():
     "Get the root path for installed Sherpa header files"
-    
+
     return os.path.join(os.path.dirname(__file__), 'include')
+
 
 def get_config():
     "Get the path for the installed Sherpa configuration file"
@@ -96,14 +100,14 @@ def get_config():
     # ignore any user config file
     if (os.environ.has_key('NOSHERPARC') == True):
         return os.path.join(os.path.dirname(__file__), filename)
-    
+
     # If SHERPARC is set, read in config file from there,
     # and ignore default location
     if (os.environ.has_key('SHERPARC') == True):
         config = os.environ.get('SHERPARC')
         if os.path.isfile(config):
             return config
-        
+
     # SHERPARC was not set, so look for .sherpa.rc in default
     # location, which is user's home directory.
     home_dir = os.environ.get('HOME')
@@ -115,28 +119,29 @@ def get_config():
     # If no user config file is set, fall back to system config file
     return os.path.join(os.path.dirname(__file__), filename)
 
-    
+
 def test(level=1, verbosity=1, datadir=None):
     """
-    
+
     Run the Sherpa test suite, testing all available subpackages
     (including the discipline-specific ones)
-    
+
     """
     # import sherpa.all
     # import sherpa.astro.all
     from sherpa.utils import SherpaTest
     SherpaTest().test(level, verbosity, datadir)
 
+
 def clitest():
     from optparse import OptionParser
     parser = OptionParser()
     parser.add_option("-l", "--level", dest="level",
-                  help="Test Level", default=1)
+                      help="Test Level", default=1)
     parser.add_option("-v", "--verbosity", dest="verbosity",
-                  help="Test Verbosity", default=1)
+                      help="Test Verbosity", default=1)
     parser.add_option("-d", "--datadir", dest="datadir",
-                  help="Test Level", default=None)
+                      help="Test Level", default=None)
     (options, _) = parser.parse_args()
     test(options.level, options.verbosity, options.datadir)
 

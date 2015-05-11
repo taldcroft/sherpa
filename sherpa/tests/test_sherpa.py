@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -22,6 +22,7 @@ import sherpa
 from sherpa.utils import SherpaTest, SherpaTestCase, needs_data
 from sherpa import ui
 
+
 class test_sherpa(SherpaTestCase):
 
     def test_include_dir(self):
@@ -30,23 +31,22 @@ class test_sherpa(SherpaTestCase):
 
     @needs_data
     def setUp(self):
-	self.agn2 = self.datadir + '/ciao4.3/faulty_load_data/agn2'
-	self.agn2_fixed = self.datadir + '/ciao4.3/faulty_load_data/agn2_fixed'
-	self.template_idx = self.datadir + '/ciao4.3/faulty_load_data/table.txt'
+        self.agn2 = self.datadir + '/ciao4.3/faulty_load_data/agn2'
+        self.agn2_fixed = self.datadir + '/ciao4.3/faulty_load_data/agn2_fixed'
+        self.template_idx = self.datadir + '/ciao4.3/faulty_load_data/table.txt'
 
     @needs_data
     def test_not_reading_header_without_comment(self):
-	self.assertRaises(ValueError, ui.load_data, self.agn2)
+        self.assertRaises(ValueError, ui.load_data, self.agn2)
 
     @needs_data
     def test_reading_floats(self):
-	ui.load_data(self.agn2_fixed)
+        ui.load_data(self.agn2_fixed)
 
     @needs_data
     def test_reading_strings(self):
-	ui.load_data(self.template_idx, require_floats=False)
+        ui.load_data(self.template_idx, require_floats=False)
 
     @needs_data
     def test_require_float(self):
-	self.assertRaises(ValueError, ui.load_data, self.agn2)
-
+        self.assertRaises(ValueError, ui.load_data, self.agn2)

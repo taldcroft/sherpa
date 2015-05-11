@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -33,8 +33,8 @@ class test_models(SherpaTestCase):
             clsobj = getattr(models, cls)
 
             if ((not isinstance(clsobj, type)) or
-                (not issubclass(clsobj, ArithmeticModel)) or
-                (clsobj is ArithmeticModel)):
+                    (not issubclass(clsobj, ArithmeticModel)) or
+                    (clsobj is ArithmeticModel)):
                 continue
 
             # These have a very different interface than the others
@@ -50,10 +50,10 @@ class test_models(SherpaTestCase):
 
             try:
                 if m.name.count('2d') or (m.name == 'hubblereynolds'):
-                    pt_out  = m(x, x)
+                    pt_out = m(x, x)
                     int_out = m(x, x, x, x)
                 else:
-                    pt_out  = m(x)
+                    pt_out = m(x)
                     int_out = m(x, x)
             except ValueError:
                 self.fail("evaluation of model '%s' failed" % cls)

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -22,6 +22,7 @@ from subprocess import call
 from multiprocessing import cpu_count
 import os
 
+
 def clean_deps():
     prefix = os.getcwd()
     os.chdir('extern')
@@ -33,15 +34,18 @@ def clean_deps():
         pass
     os.chdir(prefix)
 
+
 def build_deps(configure):
-    prefix=os.getcwd()
+    prefix = os.getcwd()
     os.chdir('extern')
     os.chmod(configure[0], 0755)
     out = call(configure)
-    if out != 0: exit(out)
+    if out != 0:
+        exit(out)
 #    cflags = '-fPIC'
 #    out = call(['make', 'CFLAGS='+cflags,'-j'+str(cpu_count()+1), 'install'])
     out = call(['make', '-j'+str(cpu_count()+1), 'install'])
-    if out != 0: exit(out)
+    if out != 0:
+        exit(out)
     open('built', 'w').close()
     os.chdir(prefix)

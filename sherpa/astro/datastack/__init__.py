@@ -10,30 +10,30 @@ multiple datasets.
 :Author: Tom Aldcroft (aldcroft@head.cfa.harvard.edu)
 :Author: Omar Laurino (olaurino@head.cfa.harvard.edu)
 """
-## Copyright (c) 2010, Smithsonian Astrophysical Observatory
-## All rights reserved.
-## 
-## Redistribution and use in source and binary forms, with or without
-## modification, are permitted provided that the following conditions are met:
-##     * Redistributions of source code must retain the above copyright
-##       notice, this list of conditions and the following disclaimer.
-##     * Redistributions in binary form must reproduce the above copyright
-##       notice, this list of conditions and the following disclaimer in the
-##       documentation and/or other materials provided with the distribution.
-##     * Neither the name of the Smithsonian Astrophysical Observatory nor the
-##       names of its contributors may be used to endorse or promote products
-##       derived from this software without specific prior written permission.
-## 
-## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-## ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-## WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-## DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
-## DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-## LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-## ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-## (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS  
-## SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Copyright (c) 2010, Smithsonian Astrophysical Observatory
+# All rights reserved.
+##
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of the Smithsonian Astrophysical Observatory nor the
+# names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+##
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
 import types
@@ -64,23 +64,25 @@ def _config_logger(name, level, stream):
 
 logger = _config_logger(__name__, level=logging.WARNING, stream=sys.stdout)
 
+
 def set_stack_verbosity(level):
     logger.setLevel(level)
 
-def set_stack_verbose(verbose=True):
-     """Configure whether stack functions print informational messages.
-     :param verbose: print messages if True (default=True)
-     :returns: None
-     """
-     if verbose:
-         logger.setLevel(logging.INFO)
-     else:
-         logger.setLevel(logging.WARNING)
 
-# Get plot package 
+def set_stack_verbose(verbose=True):
+    """Configure whether stack functions print informational messages.
+    :param verbose: print messages if True (default=True)
+    :returns: None
+    """
+    if verbose:
+        logger.setLevel(logging.INFO)
+    else:
+        logger.setLevel(logging.WARNING)
+
+# Get plot package
 _cp = ConfigParser.ConfigParser()
 _cp.read(sherpa.get_config())
-_plot_pkg =  _cp.get('options', 'plot_pkg')
+_plot_pkg = _cp.get('options', 'plot_pkg')
 if _plot_pkg == 'pylab':
     import matplotlib.pyplot as plt
 elif _plot_pkg == 'chips':
@@ -100,8 +102,10 @@ def set_template_id(newid):
     global id_str
     id_str = newid
 
+
 def create_stack_model(model, id_):
     model_comps = {}
+
     def _get_new_model(model, level=0):
         if hasattr(model, 'parts'):
             # Recursively descend through model and create new parts (as needed)
@@ -114,15 +118,16 @@ def create_stack_model(model, id_):
                 return model.op(*newparts)
             elif isinstance(model, sherpa.astro.instrument.RSPModelPHA):
                 return sherpa.astro.instrument.RSPModelPHA(rmf=model.rmf, model=newparts[0],
-                                                        arf=model.arf, pha=model.pha)
+                                                           arf=model.arf, pha=model.pha)
             elif isinstance(model, sherpa.astro.instrument.RMFModelPHA):
                 return sherpa.astro.instrument.RSPModelPHA(rmf=model.rmf, model=newparts[0],
-                                                        arf=model.arf, pha=model.pha)
+                                                           arf=model.arf, pha=model.pha)
             elif isinstance(model, sherpa.astro.instrument.ARFModelPHA):
                 return sherpa.astro.instrument.ARFModelPHA(rmf=model.rmf, model=newparts[0],
-                                                        arf=model.arf, pha=model.pha)
+                                                           arf=model.arf, pha=model.pha)
             else:
-                raise ValueError("Unexpected composite model {0} (not operator, ARF or RMF)".format(repr(model)))
+                raise ValueError(
+                    "Unexpected composite model {0} (not operator, ARF or RMF)".format(repr(model)))
         else:
             if isinstance(model, sherpa.models.model.ArithmeticConstantModel):
                 return model.val
@@ -130,14 +135,16 @@ def create_stack_model(model, id_):
             try:
                 model_type, model_name_ID = model.name.split('.')
             except ValueError:
-                raise ValueError('Model name "{0}" must be in format <model_type>.<name>'.format(model.name))
+                raise ValueError(
+                    'Model name "{0}" must be in format <model_type>.<name>'.format(model.name))
 
             model_name = re.sub(id_str, str(id_), model_name_ID)
             if id_str in model_name_ID:
                 try:
                     model = getattr(getattr(sherpa.astro.ui, model_type), model_name)
                 except AttributeError:
-                    # Must be a user model, so use add_model to put a modelwrapper function into namespace
+                    # Must be a user model, so use add_model to put a modelwrapper function
+                    # into namespace
                     sherpa.astro.ui.add_model(type(model))
                     model = eval('{0}.{1}'.format(model_type, model_name))
 
@@ -149,10 +156,13 @@ def create_stack_model(model, id_):
 
     return _get_new_model(model), model_comps
 
+
 class DataStack(object):
+
     """
     Manipulate a stack of data in Sherpa.
     """
+
     def __init__(self):
         self.getitem_ids = None
         self.datasets = []
@@ -206,7 +216,8 @@ class DataStack(object):
                 obsid = dataset['data'].header['OBS_ID']
             if hasattr(dataset['data'], 'header') and "MJD_OBS" in dataset['data'].header.keys():
                 time = dataset['data'].header['MJD_OBS']
-            print('{0}: {1} {2}: {3} {4}: {5}'.format(dataset['id'], dataset['data'].name, 'OBS_ID', obsid, "MJD_OBS", time))
+            print('{0}: {1} {2}: {3} {4}: {5}'.format(
+                dataset['id'], dataset['data'].name, 'OBS_ID', obsid, "MJD_OBS", time))
 
     def get_stack_ids(self):
         """Get the ids for all datasets in stack
@@ -261,7 +272,8 @@ class DataStack(object):
                 ui.load_arrays(id, *args, **kwargs)
                 return
             else:
-                raise AttributeError("When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
+                raise AttributeError(
+                    "When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
 
         # Array Stack.
         for arrays in args[0]:
@@ -269,7 +281,6 @@ class DataStack(object):
             logger.info('Loading dataset id %s' % dataid)
             ui.load_arrays(dataid, *arrays)
             self._add_dataset(dataid)
-
 
     def load_pha(self, id, arg=None, use_errors=False):
         if arg is None:
@@ -280,7 +291,8 @@ class DataStack(object):
                 ui.load_pha(id, arg, use_errors)
                 return
             else:
-                raise AttributeError("When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
+                raise AttributeError(
+                    "When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
 
         # File Stacks. If the file argument is a stack file, expand the file and call this function for each file
         #   in the stack.
@@ -291,15 +303,15 @@ class DataStack(object):
         except:
             self._load_func(ui.load_pha, arg, use_errors)
 
-
     def _load_func_factory(load_func):
         """Override a native Sherpa data loading function."""
+
         def _load(self, *args, **kwargs):
 
-            if len(args)==1:
+            if len(args) == 1:
                 id, arg = None, args[0]
-                args=[]
-            if len(args)>1:
+                args = []
+            if len(args) > 1:
                 args = args[1:]
 
             if id is not None:
@@ -307,7 +319,8 @@ class DataStack(object):
                     self._load_func(load_func, id, arg, *args, **kwargs)
                     return
                 else:
-                    raise AttributeError("When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
+                    raise AttributeError(
+                        "When called from a datastack instance, an ID cannot be provided to a load function ("+id+")")
 
             # File Stacks. If the file argument is a stack file, expand the file and call this function for each file
             #   in the stack.
@@ -357,7 +370,7 @@ class DataStack(object):
                 pass
             except Exception, exc:
                 raise type(exc)('Error converting model "{0}" '
-                                 'to a sherpa model object: {1}'.format(model, exc))
+                                'to a sherpa model object: {1}'.format(model, exc))
             for dataset in datasets:
                 id_ = dataset['id']
                 logger.info('Setting stack model using {0}() for id={1}'.format(
@@ -376,7 +389,7 @@ class DataStack(object):
     set_bkg_model = _set_model_factory(ui.set_bkg_model)
     set_full_model = _set_model_factory(ui.set_full_model)
     set_bkg_full_model = _set_model_factory(ui.set_bkg_full_model)
-    
+
     def filter_datasets(self):
         """Return filtered list of datasets as specified in the __getitem__
         argument (via self.getitem_ids which gets set in __getitem__).
@@ -390,7 +403,8 @@ class DataStack(object):
         try:
             return [self.dataset_ids[x] for x in filter_ids]
         except KeyError:
-            raise ValueError('IDs = {0} not contained in dataset IDs = {1}'.format(filter_ids, self.ids))
+            raise ValueError(
+                'IDs = {0} not contained in dataset IDs = {1}'.format(filter_ids, self.ids))
 
     def _sherpa_cmd_factory(func):
         def wrapfunc(self, *args, **kwargs):
@@ -552,7 +566,6 @@ class DataStack(object):
     fit = _sherpa_fit_func(ui.fit)
     conf = _sherpa_fit_func(ui.conf)
 
-
     def _print_window(self, *args, **kwargs):
         """Save figure for each dataset.
 
@@ -712,23 +725,25 @@ class DataStack(object):
 _always_wrapped = ('load_pha', 'load_arrays', 'load_ascii', 'load_data', 'load_bkg')
 
 # Use this and subsequent loop to wrap every function in sherpa.astro.ui with a datastack version
+
+
 def _sherpa_ui_wrap(func):
     def wrap(*args, **kwargs):
         wrapfunc = func
         if args:
-            if isinstance(args[0], DataStack): 
+            if isinstance(args[0], DataStack):
                 datastack, args = args[0], args[1:]
             # If the first argument is a list and it's either empty or made of non-iterables, then it's a datastack definition.
             # If the list contains iterable it must be arrays for load_arrays.
-            elif isinstance(args[0], list) and not (len(args[0])>0 and hasattr(args[0][0],'__iter__')):
+            elif isinstance(args[0], list) and not (len(args[0]) > 0 and hasattr(args[0][0], '__iter__')):
                 datastack, args = (DATASTACK[args[0]] if args[0] else DATASTACK), args[1:]
             else:
                 if func.__name__ in _always_wrapped:
-                # some (all?) load_* functions must always be wrapped for file stack syntax check
-                # and for ensuring dataset id consistency.
+                    # some (all?) load_* functions must always be wrapped for file stack syntax check
+                    # and for ensuring dataset id consistency.
                     datastack = DATASTACK
                 else:
-                    return func(*args, **kwargs) # No stack specifier so use native sherpa func
+                    return func(*args, **kwargs)  # No stack specifier so use native sherpa func
 
             try:
                 wrapfunc = getattr(datastack, func.__name__)
@@ -742,14 +757,15 @@ def _sherpa_ui_wrap(func):
     wrap.__doc__ = func.__doc__
     return wrap
 
+
 def _datastack_wrap(func):
     def wrap(*args, **kwargs):
         if not args:
             args = ([],) + args
 
-        if isinstance(args[0], DataStack): 
+        if isinstance(args[0], DataStack):
             datastack, args = args[0], args[1:]
-        elif isinstance(args[0], list) and not (len(args[0])>0 and hasattr(args[0][0],'__iter__')):
+        elif isinstance(args[0], list) and not (len(args[0]) > 0 and hasattr(args[0][0], '__iter__')):
             datastack, args = (DATASTACK[args[0]] if args[0] else DATASTACK), args[1:]
         else:
             datastack = DATASTACK
@@ -772,6 +788,7 @@ for attr in dir(ui):
 
 for funcname in ['clear_stack', 'show_stack', 'get_stack_ids', 'query', 'query_by_header_keyword', 'query_by_obsid']:
     setattr(_module, funcname, _datastack_wrap(getattr(DataStack, funcname)))
+
 
 def clean():
     DATASTACK.clear_models()

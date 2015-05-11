@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -23,7 +23,9 @@ from deps import build_deps
 
 import os
 
+
 class build(_build):
+
     def run(self):
         configure = self.get_finalized_command('sherpa_config', True).build_configure()
         self.get_finalized_command('xspec_config', True).run()

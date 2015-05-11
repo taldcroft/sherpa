@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -31,6 +31,7 @@ logger = logging.getLogger('sherpa')
 
 
 class test_design(SherpaTestCase):
+
     def setUp(self):
         clear_stack()
         ui.clean()
@@ -43,8 +44,6 @@ class test_design(SherpaTestCase):
         clear_stack()
         ui.clean()
         set_template_id("__ID")
-
-
 
     def test_case_1(self):
         datadir = '/'.join((self._this_dir, 'data'))
@@ -84,16 +83,16 @@ class test_design(SherpaTestCase):
         assert 3 == len(ds.datasets)
 
         dids = DATASTACK.get_stack_ids()
-        assert dids == [1,2,3,4]
+        assert dids == [1, 2, 3, 4]
 
         sids = ui._session._data.keys()
-        assert sids == [1,2,3,4,5,6,7, "myid"]
+        assert sids == [1, 2, 3, 4, 5, 6, 7, "myid"]
 
-        set_source([1,2], "powlaw1d.pID")
-        set_source([3,4], "brokenpowerlaw.bpID")
+        set_source([1, 2], "powlaw1d.pID")
+        set_source([3, 4], "brokenpowerlaw.bpID")
 
         dsids = ds.get_stack_ids()
-        assert dsids == [5,6,7]
+        assert dsids == [5, 6, 7]
 
         p1 = ui._session._model_components['p1']
         p2 = ui._session._model_components['p2']
@@ -106,7 +105,7 @@ class test_design(SherpaTestCase):
         assert bp4 is not None
 
         set_source(1, "polynom1d.poly1")
-        set_source([2,3,4], "atten.attID")
+        set_source([2, 3, 4], "atten.attID")
 
         poly1 = ui._session._model_components['poly1']
         a2 = ui._session._model_components['att2']
@@ -124,7 +123,9 @@ class test_design(SherpaTestCase):
         assert 0 == len(ui._session._data)
         assert 3 == len(ds.datasets)
 
+
 class test_global(SherpaTestCase):
+
     def setUp(self):
         clear_stack()
         ui.clean()
@@ -134,8 +135,6 @@ class test_global(SherpaTestCase):
         clear_stack()
         ui.clean()
         set_template_id("__ID")
-
-
 
     def test_case_2(self):
         x1 = np.arange(50)+100
@@ -227,7 +226,7 @@ class test_global(SherpaTestCase):
         const2 = ui._session._get_model_component('const2')
         const3 = ui._session._get_model_component('const3')
 
-        link([2,3], 'const.c0')
+        link([2, 3], 'const.c0')
 
         set_par([2], 'const.c0', 3)
         set_par([1], 'const.c0', 7)
@@ -247,6 +246,7 @@ class test_global(SherpaTestCase):
 
 
 class test_load(SherpaTestCase):
+
     def setUp(self):
         clear_stack()
         ui.clean()
@@ -263,8 +263,6 @@ class test_load(SherpaTestCase):
         os.remove(self.name2)
         set_stack_verbose(False)
 
-
-
     def test_case_3(self):
         load_ascii("@{}".format(self.lisname))
         assert len(ui._session._data) == 2
@@ -277,7 +275,6 @@ class test_load(SherpaTestCase):
         load_data("@"+"/".join((self._this_dir, 'data', 'pha.lis')))
         assert len(ui._session._data) == 6
         assert len(DATASTACK.datasets) == 6
-
 
     def create_files(self):
         fd1, self.name1 = tempfile.mkstemp()
@@ -416,7 +413,7 @@ class test_partial_oo(SherpaTestCase):
         const2 = ui._session._get_model_component('const2')
         const3 = ui._session._get_model_component('const3')
 
-        link(ds[2,3], 'const.c0')
+        link(ds[2, 3], 'const.c0')
 
         set_par(ds[2], 'const.c0', 3)
         set_par(ds[1], 'const.c0', 7)
@@ -541,7 +538,7 @@ class test_oo(SherpaTestCase):
         const2 = ui._session._get_model_component('const2')
         const3 = ui._session._get_model_component('const3')
 
-        ds[2,3].link('const.c0')
+        ds[2, 3].link('const.c0')
 
         ds[2].set_par('const.c0', 3)
         ds[1].set_par('const.c0', 7)
@@ -559,7 +556,9 @@ class test_oo(SherpaTestCase):
 
         assert const3.c0._link is not const2.c0
 
+
 class test_pha(SherpaTestCase):
+
     def setUp(self):
         clear_stack()
         ui.clean()
@@ -571,8 +570,6 @@ class test_pha(SherpaTestCase):
         ui.clean()
         set_template_id("__ID")
 
-
-
     def test_case_6(self):
         datadir = '/'.join((self._this_dir, 'data'))
         ls = '@'+'/'.join((datadir, 'pha.lis'))
@@ -583,7 +580,6 @@ class test_pha(SherpaTestCase):
 
         load_bkg_arf([], '/'.join((datadir, "acisf04938_000N002_r0043_arf3.fits")))
         load_bkg_arf([], '/'.join((datadir, "acisf07867_000N001_r0002_arf3.fits")))
-
 
         # Define background models
         bkg_arfs = get_bkg_arf([])
@@ -621,7 +617,9 @@ class test_pha(SherpaTestCase):
 
         fit()
 
+
 class test_query(SherpaTestCase):
+
     def setUp(self):
         clear_stack()
         ui.clean()
@@ -639,7 +637,7 @@ class test_query(SherpaTestCase):
 
         f = query_by_header_keyword('INSTRUME', 'ACIS')
 
-        assert f == [1,2]
+        assert f == [1, 2]
 
         f = query_by_obsid('7867')
 

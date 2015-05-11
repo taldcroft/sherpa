@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -64,7 +64,7 @@ def _has_hdu(hdulist, id):
 
 
 def _has_key(hdu, name):
-    #return hdu.header.has_key(name)
+    # return hdu.header.has_key(name)
     return name in hdu.header
 
 
@@ -105,12 +105,14 @@ def _get_meta_data(hdu):
 def _get_wcs_key(hdu, key0, key1, fix_type=False, dtype=SherpaFloat):
     if _has_key(hdu, key0) and _has_key(hdu, key1):
         return numpy.array([_try_key(hdu, key0, fix_type, dtype),
-                            _try_key(hdu, key1, fix_type, dtype)],dtype)
+                            _try_key(hdu, key1, fix_type, dtype)], dtype)
     return ()
 
+
 def _set_wcs_key(hdulist, name, val):
-    card = pyfits.Card( str(name), val )
+    card = pyfits.Card(str(name), val)
     hdulist.append(card)
+
 
 def _try_col(hdu, name, dtype=SherpaFloat, fix_type=False):
     if name not in hdu.columns.names:
@@ -128,6 +130,7 @@ def _try_col(hdu, name, dtype=SherpaFloat, fix_type=False):
 
     return col
 
+
 def _try_tbl_col(hdu, name, dtype=SherpaFloat, fix_type=False):
     if name not in hdu.columns.names:
         return (None,)
@@ -143,6 +146,7 @@ def _try_tbl_col(hdu, name, dtype=SherpaFloat, fix_type=False):
         col = col.astype(dtype)
 
     return numpy.column_stack(col)
+
 
 def _try_vec(hdu, name, size=2, dtype=SherpaFloat, fix_type=False):
     if name not in hdu.columns.names:
@@ -163,11 +167,13 @@ def _try_vec(hdu, name, size=2, dtype=SherpaFloat, fix_type=False):
 
     return col
 
+
 def _require_col(hdu, name, dtype=SherpaFloat, fix_type=False):
     col = _try_col(hdu, name, dtype, fix_type)
     if col is None:
         raise IOErr('reqcol', name, hdu._file.name)
     return col
+
 
 def _require_tbl_col(hdu, name, dtype=SherpaFloat, fix_type=False):
     col = _try_tbl_col(hdu, name, dtype, fix_type)
@@ -175,11 +181,13 @@ def _require_tbl_col(hdu, name, dtype=SherpaFloat, fix_type=False):
         raise IOErr('reqcol', name, hdu._file.name)
     return col
 
+
 def _require_vec(hdu, name, size=2, dtype=SherpaFloat, fix_type=False):
     col = _try_vec(hdu, name, size, dtype, fix_type)
     if numpy.equal(col, None).any():
         raise IOErr('reqcol', name, hdu._file.name)
     return col
+
 
 def _try_col_or_key(hdu, name, dtype=SherpaFloat, fix_type=False):
     col = _try_col(hdu, name, dtype, fix_type)
@@ -187,12 +195,12 @@ def _try_col_or_key(hdu, name, dtype=SherpaFloat, fix_type=False):
         return col
     return _try_key(hdu, name, fix_type, dtype)
 
+
 def _try_vec_or_key(hdu, name, size, dtype=SherpaFloat, fix_type=False):
     col = _try_col(hdu, name, dtype, fix_type)
     if col is not None:
         return col
     return numpy.array([_try_key(hdu, name, fix_type, dtype)]*size)
-
 
 
 ## Read Functions ##
@@ -233,24 +241,21 @@ def read_table_blocks(arg, make_copy=False):
     return filename, cols, hdr
 
 
-
-
-
-def get_header_data( arg, blockname=None, hdrkeys=None ):
+def get_header_data(arg, blockname=None, hdrkeys=None):
 
     filename = ''
     if type(arg) == str and is_binary_file(arg):
         tbl = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         tbl = arg
         filename = tbl[0]._file.name
     else:
         raise IOErr('badfile', arg, "a binary FITS table or a PyFITS.BinTableHDU list")
 
-    hdr={}
+    hdr = {}
     try:
         # Use the first binary table extension we find.  Throw an exception
         # if there aren't any.
@@ -279,7 +284,7 @@ def get_header_data( arg, blockname=None, hdrkeys=None ):
     return hdr
 
 
-def get_column_data( *args ):
+def get_column_data(*args):
     """
     get_column_data( *NumPy_args )
     """
@@ -294,14 +299,15 @@ def get_column_data( *args ):
         if arg is not None:
             vals = numpy.asarray(arg)
             for col in numpy.column_stack(vals):
-                cols.append( col )
+                cols.append(col)
         else:
-            cols.append( arg )
+            cols.append(arg)
 
     return cols
 
+
 def get_table_data(arg, ncols=1, colkeys=None, make_copy=False, fix_type=False,
-                   blockname = None, hdrkeys=None):
+                   blockname=None, hdrkeys=None):
     """
     get_table_data( filename , ncols=1 [, colkeys=None [, make_copy=False [, blockname=None [, hdrkeys=None ]]]])
 
@@ -311,9 +317,9 @@ def get_table_data(arg, ncols=1, colkeys=None, make_copy=False, fix_type=False,
     if type(arg) == str and is_binary_file(arg):
         tbl = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         tbl = arg
         filename = tbl[0]._file.name
     else:
@@ -341,9 +347,9 @@ def get_table_data(arg, ncols=1, colkeys=None, make_copy=False, fix_type=False,
             colkeys = [name.strip().upper() for name in list(colkeys)]
         # Try Channel, Counts or X,Y before defaulting to first two table cols
         elif ('CHANNEL' in cnames) and ('COUNTS' in cnames):
-            colkeys = ['CHANNEL','COUNTS']
+            colkeys = ['CHANNEL', 'COUNTS']
         elif ('X' in cnames) and ('Y' in cnames):
-            colkeys = ['X','Y']
+            colkeys = ['X', 'Y']
         else:
             colkeys = cnames[:ncols]
 
@@ -352,7 +358,7 @@ def get_table_data(arg, ncols=1, colkeys=None, make_copy=False, fix_type=False,
             for col in _require_tbl_col(hdu, name, fix_type=fix_type):
                 cols.append(col)
 
-        hdr={}
+        hdr = {}
         if hdrkeys is not None:
             for key in hdrkeys:
                 hdr[key] = _require_key(hdu, key)
@@ -373,9 +379,9 @@ def get_image_data(arg, make_copy=False):
     if type(arg) == str and is_binary_file(arg):
         hdu = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0 ) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         hdu = arg
         filename = hdu[0]._file.name
     else:
@@ -430,13 +436,13 @@ def get_image_data(arg, make_copy=False):
         crvalw = _get_wcs_key(img, 'CRVAL1', 'CRVAL2')
 
         # proper calculation of cdelt wrt PHYSICAL coords
-        if (( cdeltw != () ) and ( cdeltp != () ) ):
+        if ((cdeltw != ()) and (cdeltp != ())):
             cdeltw = cdeltw/cdeltp
 
         # proper calculation of crpix wrt PHYSICAL coords
-        if (( crpixw != () ) and ( crvalp != () ) and
-            ( cdeltp != () ) and ( crpixp != () ) ):
-            crpixw = crvalp + ( crpixw - crpixp ) * cdeltp
+        if ((crpixw != ()) and (crvalp != ()) and
+                (cdeltp != ()) and (crpixp != ())):
+            crpixw = crvalp + (crpixw - crpixp) * cdeltp
 
         sky = None
         if(cdeltp != () and crpixp != () and crvalp != () and transformstatus):
@@ -450,10 +456,10 @@ def get_image_data(arg, make_copy=False):
         data['eqpos'] = eqpos
         data['header'] = _get_meta_data(img)
 
-        keys = ['MTYPE1','MFORM1','CTYPE1P','CTYPE2P','WCSNAMEP','CDELT1P',
-                'CDELT2P','CRPIX1P','CRPIX2P','CRVAL1P','CRVAL2P',
-                'MTYPE2','MFORM2','CTYPE1','CTYPE2','CDELT1','CDELT2','CRPIX1',
-                'CRPIX2','CRVAL1','CRVAL2','CUNIT1','CUNIT2','EQUINOX']
+        keys = ['MTYPE1', 'MFORM1', 'CTYPE1P', 'CTYPE2P', 'WCSNAMEP', 'CDELT1P',
+                'CDELT2P', 'CRPIX1P', 'CRPIX2P', 'CRVAL1P', 'CRVAL2P',
+                'MTYPE2', 'MFORM2', 'CTYPE1', 'CTYPE2', 'CDELT1', 'CDELT2', 'CRPIX1',
+                'CRPIX2', 'CRVAL1', 'CRVAL2', 'CUNIT1', 'CUNIT2', 'EQUINOX']
 
         for key in keys:
             try:
@@ -477,9 +483,9 @@ def get_arf_data(arg, make_copy=False):
     if type(arg) == str:
         arf = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         arf = arg
         filename = arf[0]._file.name
     else:
@@ -504,9 +510,9 @@ def get_arf_data(arg, make_copy=False):
         data['energ_lo'] = _require_col(hdu, 'ENERG_LO', fix_type=True)
         data['energ_hi'] = _require_col(hdu, 'ENERG_HI', fix_type=True)
         data['specresp'] = _require_col(hdu, 'SPECRESP', fix_type=True)
-        data['bin_lo']   = _try_col(hdu, 'BIN_LO', fix_type=True)
-        data['bin_hi']   = _try_col(hdu, 'BIN_HI', fix_type=True)
-        data['header']     = _get_meta_data(hdu)
+        data['bin_lo'] = _try_col(hdu, 'BIN_LO', fix_type=True)
+        data['bin_hi'] = _try_col(hdu, 'BIN_HI', fix_type=True)
+        data['header'] = _get_meta_data(hdu)
         data['header'].pop('EXPOSURE')
 
     finally:
@@ -525,9 +531,9 @@ def get_rmf_data(arg, make_copy=False):
     if type(arg) == str:
         rmf = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         rmf = arg
         filename = rmf[0]._file.name
     else:
@@ -552,21 +558,21 @@ def get_rmf_data(arg, make_copy=False):
         data['detchans'] = SherpaUInt(_require_key(hdu, 'DETCHANS'))
         data['energ_lo'] = _require_col(hdu, 'ENERG_LO', fix_type=True)
         data['energ_hi'] = _require_col(hdu, 'ENERG_HI', fix_type=True)
-        data['n_grp']    = _require_col(hdu, 'N_GRP', fix_type=True,
-                                        dtype=SherpaUInt)
-        data['f_chan']   = _require_vec(hdu, 'F_CHAN', fix_type=True,
-                                        dtype=SherpaUInt)
-        data['n_chan']   = _require_vec(hdu, 'N_CHAN', fix_type=True,
-                                        dtype=SherpaUInt)
+        data['n_grp'] = _require_col(hdu, 'N_GRP', fix_type=True,
+                                     dtype=SherpaUInt)
+        data['f_chan'] = _require_vec(hdu, 'F_CHAN', fix_type=True,
+                                      dtype=SherpaUInt)
+        data['n_chan'] = _require_vec(hdu, 'N_CHAN', fix_type=True,
+                                      dtype=SherpaUInt)
         # Read MATRIX as-is -- we will flatten it below, because
         # we need to remove all rows corresponding to n_grp[row] == 0
-        data['matrix']   = None
+        data['matrix'] = None
         if 'MATRIX' not in hdu.columns.names:
             pass
         else:
-            data['matrix']   = hdu.data.field('MATRIX')
+            data['matrix'] = hdu.data.field('MATRIX')
 
-        data['header']     = _get_meta_data(hdu)
+        data['header'] = _get_meta_data(hdu)
         data['header'].pop('DETCHANS')
 
         # Beginning of non-Chandra RMF support
@@ -576,7 +582,7 @@ def get_rmf_data(arg, make_copy=False):
             data['offset'] = tlmin
         else:
             error("Failed to locate TLMIN keyword for F_CHAN" +
-                  " column in RMF file '%s'; "  % filename +
+                  " column in RMF file '%s'; " % filename +
                   'Update the offset value in the RMF data set to' +
                   ' appropriate TLMIN value prior to fitting')
 
@@ -597,19 +603,19 @@ def get_rmf_data(arg, make_copy=False):
     finally:
         rmf.close()
 
-    ### For every row i of the response matrix, such that
-    ### n_grp[i] == 0, we need to remove that row from the
-    ### n_chan, f_chan, and matrix arrays we are constructing
-    ### to be passed up to the DataRMF data structure.
- 
-    ### This is trivial for n_chan and f_chan.  For the matrix
-    ### array this can be more work -- can't just remove all
-    ### zeroes, because some rows where n_grp[row] > 0 might
-    ### still have zeroes in the matrix.  I add new code first
-    ### to deal with the matrix, then simpler code to remove zeroes
-    ### from n_chan and f_chan.
+    # For every row i of the response matrix, such that
+    # n_grp[i] == 0, we need to remove that row from the
+    # n_chan, f_chan, and matrix arrays we are constructing
+    # to be passed up to the DataRMF data structure.
 
-    # Read in MATRIX column with structure as-is -- i.e., as an array of 
+    # This is trivial for n_chan and f_chan.  For the matrix
+    # array this can be more work -- can't just remove all
+    # zeroes, because some rows where n_grp[row] > 0 might
+    # still have zeroes in the matrix.  I add new code first
+    # to deal with the matrix, then simpler code to remove zeroes
+    # from n_chan and f_chan.
+
+    # Read in MATRIX column with structure as-is -- i.e., as an array of
     # arrays.  Then flatten it, but include only those arrays that come from
     # rows where n_grp[row] > 0.  Zero elements can only be included from
     # rows where n_grp[row] > 0.  SMD 05/23/13
@@ -623,11 +629,12 @@ def get_rmf_data(arg, make_copy=False):
     data['matrix'] = numpy.concatenate([numpy.asarray(row) for row in data['matrix']])
     data['matrix'] = data['matrix'].astype(SherpaFloat)
 
-    #Flatten f_chan and n_chan vectors into 1D arrays as crates does
+    # Flatten f_chan and n_chan vectors into 1D arrays as crates does
     # according to group
-    if( (data['f_chan'].ndim > 1) and ( data['n_chan'].ndim > 1) ):
-        f_chan = []; n_chan = [];
-        for grp,fch,nch, in izip(data['n_grp'],data['f_chan'],data['n_chan']):
+    if((data['f_chan'].ndim > 1) and (data['n_chan'].ndim > 1)):
+        f_chan = []
+        n_chan = []
+        for grp, fch, nch, in izip(data['n_grp'], data['f_chan'], data['n_chan']):
             for i in xrange(grp):
                 f_chan.append(fch[i])
                 n_chan.append(nch[i])
@@ -635,12 +642,12 @@ def get_rmf_data(arg, make_copy=False):
         data['f_chan'] = numpy.asarray(f_chan, SherpaUInt)
         data['n_chan'] = numpy.asarray(n_chan, SherpaUInt)
     else:
-        if( len(data['n_grp']) == len(data['f_chan']) ):
+        if(len(data['n_grp']) == len(data['f_chan'])):
             # filter out groups with zeroes.
             good = (data['n_grp'] > 0)
             data['f_chan'] = data['f_chan'][good]
             data['n_chan'] = data['n_chan'][good]
-    
+
     return data, filename
 
 
@@ -655,9 +662,9 @@ def get_pha_data(arg, make_copy=False, use_background=False):
     if type(arg) == str and is_binary_file(arg):
         pha = pyfits.open(arg)
         filename = arg
-    elif ( (type(arg) is pyfits.HDUList) and
-           (len(arg) > 0) and
-           (arg[0].__class__ is pyfits.PrimaryHDU) ):
+    elif ((type(arg) is pyfits.HDUList) and
+          (len(arg) > 0) and
+          (arg[0].__class__ is pyfits.PrimaryHDU)):
         pha = arg
         filename = pha[0]._file.name
     else:
@@ -676,10 +683,10 @@ def get_pha_data(arg, make_copy=False, use_background=False):
         if use_background:
             for block in pha:
                 if (_try_key(block, 'HDUCLAS2') == 'BKG'):
-                         hdu = block
+                    hdu = block
 
-        keys = ['BACKFILE','ANCRFILE','RESPFILE',
-                'BACKSCAL','AREASCAL','EXPOSURE']
+        keys = ['BACKFILE', 'ANCRFILE', 'RESPFILE',
+                'BACKSCAL', 'AREASCAL', 'EXPOSURE']
         datasets = []
 
         if _try_col(hdu, 'SPEC_NUM') is None:
@@ -689,8 +696,8 @@ def get_pha_data(arg, make_copy=False, use_background=False):
             data['exposure'] = _try_key(hdu, 'EXPOSURE', True, SherpaFloat)
             #data['poisserr'] = _try_key(hdu, 'POISSERR', True, bool)
             data['backfile'] = _try_key(hdu, 'BACKFILE')
-            data['arffile']  = _try_key(hdu, 'ANCRFILE')
-            data['rmffile']  = _try_key(hdu, 'RESPFILE')
+            data['arffile'] = _try_key(hdu, 'ANCRFILE')
+            data['rmffile'] = _try_key(hdu, 'RESPFILE')
 
             # Keywords or columns
             data['backscal'] = _try_col_or_key(hdu, 'BACKSCAL', fix_type=True)
@@ -699,25 +706,25 @@ def get_pha_data(arg, make_copy=False, use_background=False):
             data['areascal'] = _try_col_or_key(hdu, 'AREASCAL', fix_type=True)
 
             # Columns
-            data['channel']         = _require_col(hdu, 'CHANNEL', fix_type=True)
-            #Make sure channel numbers not indices
+            data['channel'] = _require_col(hdu, 'CHANNEL', fix_type=True)
+            # Make sure channel numbers not indices
             chan = list(hdu.columns.names).index('CHANNEL') + 1
             tlmin = _try_key(hdu, 'TLMIN'+str(chan), True, SherpaUInt)
             if int(data['channel'][0]) == 0 or ((tlmin is not None) and tlmin == 0):
                 data['channel'] = data['channel']+1
 
-            data['counts']      = _try_col(hdu, 'COUNTS', fix_type=True)
+            data['counts'] = _try_col(hdu, 'COUNTS', fix_type=True)
             if data['counts'] is None:
-                data['counts']  = _require_col(hdu, 'RATE', fix_type=True) * data['exposure']
-            data['staterror']       = _try_col(hdu, 'STAT_ERR')
-            data['syserror']        = _try_col(hdu, 'SYS_ERR')
-            data['background_up']   = _try_col(hdu, 'BACKGROUND_UP', fix_type=True)
+                data['counts'] = _require_col(hdu, 'RATE', fix_type=True) * data['exposure']
+            data['staterror'] = _try_col(hdu, 'STAT_ERR')
+            data['syserror'] = _try_col(hdu, 'SYS_ERR')
+            data['background_up'] = _try_col(hdu, 'BACKGROUND_UP', fix_type=True)
             data['background_down'] = _try_col(hdu, 'BACKGROUND_DOWN', fix_type=True)
-            data['bin_lo']          = _try_col(hdu, 'BIN_LO', fix_type=True)
-            data['bin_hi']          = _try_col(hdu, 'BIN_HI', fix_type=True)
-            data['grouping']        = _try_col(hdu, 'GROUPING', SherpaInt)
-            data['quality']         = _try_col(hdu, 'QUALITY', SherpaInt)
-            data['header']            = _get_meta_data(hdu)
+            data['bin_lo'] = _try_col(hdu, 'BIN_LO', fix_type=True)
+            data['bin_hi'] = _try_col(hdu, 'BIN_HI', fix_type=True)
+            data['grouping'] = _try_col(hdu, 'GROUPING', SherpaInt)
+            data['quality'] = _try_col(hdu, 'QUALITY', SherpaInt)
+            data['header'] = _get_meta_data(hdu)
             for key in keys:
                 try:
                     data['header'].pop(key)
@@ -741,8 +748,8 @@ def get_pha_data(arg, make_copy=False, use_background=False):
             exposure = _try_key(hdu, 'EXPOSURE', True, SherpaFloat)
             #poisserr = _try_key(hdu, 'POISSERR', True, bool)
             backfile = _try_key(hdu, 'BACKFILE')
-            arffile  = _try_key(hdu, 'ANCRFILE')
-            rmffile  = _try_key(hdu, 'RESPFILE')
+            arffile = _try_key(hdu, 'ANCRFILE')
+            rmffile = _try_key(hdu, 'RESPFILE')
 
             # Keywords or columns
             backscal = _try_vec_or_key(hdu, 'BACKSCAL', num, fix_type=True)
@@ -751,35 +758,34 @@ def get_pha_data(arg, make_copy=False, use_background=False):
             areascal = _try_vec_or_key(hdu, 'AREASCAL', num, fix_type=True)
 
             # Columns
-            channel         = _require_vec(hdu, 'CHANNEL', num, fix_type=True)
+            channel = _require_vec(hdu, 'CHANNEL', num, fix_type=True)
 
-            #Make sure channel numbers not indices
+            # Make sure channel numbers not indices
             chan = list(hdu.columns.names).index('CHANNEL') + 1
             tlmin = _try_key(hdu, 'TLMIN'+str(chan), True, SherpaUInt)
-            
+
             for ii in range(num):
                 if int(channel[ii][0]) == 0:
                     channel[ii] += 1
-            #if ((tlmin is not None) and tlmin == 0) or int(channel[0]) == 0:
+            # if ((tlmin is not None) and tlmin == 0) or int(channel[0]) == 0:
             #    channel += 1
 
-            counts =  _try_vec(hdu, 'COUNTS', num, fix_type=True)
+            counts = _try_vec(hdu, 'COUNTS', num, fix_type=True)
             if None in counts:
-                counts =  _require_vec(hdu, 'RATE', num, fix_type=True) * data['exposure']
-            staterror       = _try_vec(hdu, 'STAT_ERR', num)
-            syserror        = _try_vec(hdu, 'SYS_ERR', num)
-            background_up   = _try_vec(hdu, 'BACKGROUND_UP', num, fix_type=True)
+                counts = _require_vec(hdu, 'RATE', num, fix_type=True) * data['exposure']
+            staterror = _try_vec(hdu, 'STAT_ERR', num)
+            syserror = _try_vec(hdu, 'SYS_ERR', num)
+            background_up = _try_vec(hdu, 'BACKGROUND_UP', num, fix_type=True)
             background_down = _try_vec(hdu, 'BACKGROUND_DOWN', num, fix_type=True)
-            bin_lo          = _try_vec(hdu, 'BIN_LO', num, fix_type=True)
-            bin_hi          = _try_vec(hdu, 'BIN_HI', num, fix_type=True)
-            grouping        = _try_vec(hdu, 'GROUPING', num, SherpaInt)
-            quality         = _try_vec(hdu, 'QUALITY', num, SherpaInt)
+            bin_lo = _try_vec(hdu, 'BIN_LO', num, fix_type=True)
+            bin_hi = _try_vec(hdu, 'BIN_HI', num, fix_type=True)
+            grouping = _try_vec(hdu, 'GROUPING', num, SherpaInt)
+            quality = _try_vec(hdu, 'QUALITY', num, SherpaInt)
 
-            orders          = _try_vec(hdu, 'TG_M', num, SherpaInt)
-            parts           = _try_vec(hdu, 'TG_PART', num, SherpaInt)
-            specnums        = _try_vec(hdu, 'SPEC_NUM', num, SherpaInt)
-            srcids          = _try_vec(hdu, 'TG_SRCID', num, SherpaInt)
-
+            orders = _try_vec(hdu, 'TG_M', num, SherpaInt)
+            parts = _try_vec(hdu, 'TG_PART', num, SherpaInt)
+            specnums = _try_vec(hdu, 'SPEC_NUM', num, SherpaInt)
+            srcids = _try_vec(hdu, 'TG_SRCID', num, SherpaInt)
 
             # Iterate over all rows of channels, counts, errors, etc
             # Populate a list of dictionaries containing
@@ -796,27 +802,27 @@ def get_pha_data(arg, make_copy=False, use_background=False):
                 data['exposure'] = exposure
                 #data['poisserr'] = poisserr
                 data['backfile'] = backfile
-                data['arffile']  = arffile
-                data['rmffile']  = rmffile
+                data['arffile'] = arffile
+                data['rmffile'] = rmffile
 
                 data['backscal'] = bscal
                 data['backscup'] = bscup
                 data['backscdn'] = bscdn
                 data['areascal'] = arsc
 
-                data['channel']         = chan
-                data['counts']          = cnt
-                data['staterror']       = staterr
-                data['syserror']        = syserr
-                data['background_up']   = backup
+                data['channel'] = chan
+                data['counts'] = cnt
+                data['staterror'] = staterr
+                data['syserror'] = syserr
+                data['background_up'] = backup
                 data['background_down'] = backdown
-                data['bin_lo']          = binlo
-                data['bin_hi']          = binhi
-                data['grouping']        = group
-                data['quality']         = qual
-                data['header']            = _get_meta_data(hdu)
-                data['header']['TG_M']     = ordr
-                data['header']['TG_PART']  = prt
+                data['bin_lo'] = binlo
+                data['bin_hi'] = binhi
+                data['grouping'] = group
+                data['quality'] = qual
+                data['header'] = _get_meta_data(hdu)
+                data['header']['TG_M'] = ordr
+                data['header']['TG_PART'] = prt
                 data['header']['SPEC_NUM'] = specnum
                 data['header']['TG_SRCID'] = srcid
 
@@ -853,7 +859,7 @@ def set_table_data(filename, data, col_names, hdr=None, hdrnames=None,
     col_names.remove("name")
     #hdrlist = pyfits.CardList()
 
-    #for name in ['exposure','backscal', 'areascal']:
+    # for name in ['exposure','backscal', 'areascal']:
     #    hdrlist.append(pyfits.Card(key=name.upper(),
     #                   value=data[name]))
 
@@ -875,7 +881,7 @@ def set_table_data(filename, data, col_names, hdr=None, hdrnames=None,
         return
 
     tbl = pyfits.new_table(pyfits.ColDefs(collist))
-                           #, header=pyfits.Header(hdrlist))
+    #, header=pyfits.Header(hdrlist))
     tbl.name = 'HISTOGRAM'
     if packup:
         return tbl
@@ -893,7 +899,7 @@ def set_pha_data(filename, data, col_names, header=None,
     for key in header.keys():
         if header[key] is None:
             continue
-        hdrlist.append(pyfits.Card( str(key.upper()), header[key] ))
+        hdrlist.append(pyfits.Card(str(key.upper()), header[key]))
 
     collist = []
     cols = []
@@ -944,7 +950,7 @@ def set_image_data(filename, data, header, ascii=False, clobber=False,
         cdeltw = data['eqpos'].cdelt
         crpixw = data['eqpos'].crpix
         crvalw = data['eqpos'].crval
-        equin  = data['eqpos'].equinox
+        equin = data['eqpos'].equinox
 
     if data['sky'] is not None:
         cdeltp = data['sky'].cdelt
@@ -955,7 +961,7 @@ def set_image_data(filename, data, header, ascii=False, clobber=False,
         _set_wcs_key(hdrlist, 'MFORM1', 'x,y     ')
         _set_wcs_key(hdrlist, 'CTYPE1P', 'x      ')
         _set_wcs_key(hdrlist, 'CTYPE2P', 'y      ')
-        _set_wcs_key(hdrlist, 'WCSNAMEP','PHYSICAL')
+        _set_wcs_key(hdrlist, 'WCSNAMEP', 'PHYSICAL')
         _set_wcs_key(hdrlist, 'CDELT1P', cdeltp[0])
         _set_wcs_key(hdrlist, 'CDELT2P', cdeltp[1])
         _set_wcs_key(hdrlist, 'CRPIX1P', crpixp[0])
@@ -966,7 +972,7 @@ def set_image_data(filename, data, header, ascii=False, clobber=False,
         if data['eqpos'] is not None:
             # Simply the inverse of read transformations in get_image_data
             cdeltw = cdeltw * cdeltp
-            crpixw = ((crpixw - crvalp) / cdeltp + crpixp )
+            crpixw = ((crpixw - crvalp) / cdeltp + crpixp)
 
     if data['eqpos'] is not None:
         _set_wcs_key(hdrlist, 'MTYPE2', 'EQPOS   ')

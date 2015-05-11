@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -28,23 +28,25 @@ config = ConfigParser()
 config.read(get_config())
 
 __all__ = ('clear_window', 'plot', 'histo', 'contour', 'point', 'set_subplot',
-           'get_split_plot_defaults','get_confid_point_defaults',
-           'get_plot_defaults','get_point_defaults', 'begin', 'end',
+           'get_split_plot_defaults', 'get_confid_point_defaults',
+           'get_plot_defaults', 'get_point_defaults', 'begin', 'end',
            'get_data_plot_defaults', 'get_model_plot_defaults',
            'get_fit_plot_defaults', 'get_resid_plot_defaults',
            'get_ratio_plot_defaults', 'get_contour_defaults', 'exceptions',
            'get_data_contour_defaults', 'get_model_contour_defaults',
            'get_fit_contour_defaults', 'get_resid_contour_defaults',
-           'get_ratio_contour_defaults','get_confid_plot_defaults',
+           'get_ratio_contour_defaults', 'get_confid_plot_defaults',
            'get_confid_contour_defaults', 'set_window_redraw', 'set_jointplot',
            'get_histo_defaults', 'get_model_histo_defaults',
            'get_component_plot_defaults', 'get_component_histo_defaults',
            'vline', 'hline', 'get_cdf_plot_defaults', 'get_scatter_plot_defaults')
 
-_initialized = False # Set this True first time begin() is called
+_initialized = False  # Set this True first time begin() is called
+
 
 def _chips_wrap(func, *args, **kwargs):
     func(*args, **kwargs)
+
 
 def _set_window_redraw(redraw):
     if chips.info_current() is not None:
@@ -58,24 +60,24 @@ def _clear_window():
             chips.erase()
         else:
             chips.add_frame()
-    
+
     if chips.info() is None:
         chips.add_window()
 
 
 def _point(x, y, overplot=True, clearwindow=False,
-          style=chips.chips_plus,
-          color=None,
-          size=None,
-          angle=None,
-          fill=None):
+           style=chips.chips_plus,
+           color=None,
+           size=None,
+           angle=None,
+           fill=None):
 
     if (not overplot) and clearwindow:
         _clear_window()
-    
+
     chips.add_point(x, y)
 
-    for var in ('style','color', 'size', 'angle', 'fill'):
+    for var in ('style', 'color', 'size', 'angle', 'fill'):
         val = locals()[var]
         if val is not None:
             if 'color' in var:
@@ -84,31 +86,32 @@ def _point(x, y, overplot=True, clearwindow=False,
 
 
 _attr_map = {
-    'linecolor' : 'color',
-    'linestyle' : 'style',
-    'linewidth' : 'thickness',
-    }
+    'linecolor': 'color',
+    'linestyle': 'style',
+    'linewidth': 'thickness',
+}
 
 _linestyle_map = {
 
-    'noline'  : chips.chips_noline,
-    'solid'   : chips.chips_solid,
-    'dot'     : chips.chips_shortdash,
-    'dash'    : chips.chips_longdash,
-    'dotdash' : chips.chips_dotlongdash,
-    }
+    'noline': chips.chips_noline,
+    'solid': chips.chips_solid,
+    'dot': chips.chips_shortdash,
+    'dash': chips.chips_longdash,
+    'dotdash': chips.chips_dotlongdash,
+}
 
 
 def _check_hex_color(val):
     if type(val) in (str, numpy.string_) and val.startswith('0x'):
-        val = str(val).replace('0x','').rjust(6,'0')
+        val = str(val).replace('0x', '').rjust(6, '0')
     return val
 
+
 def _vline(x, ymin=0, ymax=1,
-          linecolor=None,
-          linestyle=None,
-          linewidth=None,
-          overplot=False, clearwindow=True):
+           linecolor=None,
+           linestyle=None,
+           linewidth=None,
+           overplot=False, clearwindow=True):
 
     if (not overplot) and clearwindow:
         _clear_window()
@@ -126,10 +129,10 @@ def _vline(x, ymin=0, ymax=1,
 
 
 def _hline(y, xmin=0, xmax=1,
-          linecolor=None,
-          linestyle=None,
-          linewidth=None,
-          overplot=False, clearwindow=True):
+           linecolor=None,
+           linestyle=None,
+           linewidth=None,
+           overplot=False, clearwindow=True):
 
     if (not overplot) and clearwindow:
         _clear_window()
@@ -146,34 +149,31 @@ def _hline(y, xmin=0, xmax=1,
             getattr(chips.advanced, 'set_line_' + _attr_map[var])(val)
 
 
-
-
 def _plot(x, y, yerr=None, xerr=None, title=None, xlabel=None, ylabel=None,
-         overplot=False, clearwindow=True,
-         xerrorbars=False,
-         yerrorbars=False,
-         errstyle=None,
-         errcolor=None,
-         errthickness=None,
-         xlog=False,
-         ylog=False,
-         linestyle=chips.chips_solid,
-         linecolor=None,
-         symbolstyle=chips.chips_none,
-         symbolcolor=None,
-         symbolsize=None,
-         symbolfill=True,
-         linethickness=None,
-         xaxis=False,
-         ratioline=False):
-
+          overplot=False, clearwindow=True,
+          xerrorbars=False,
+          yerrorbars=False,
+          errstyle=None,
+          errcolor=None,
+          errthickness=None,
+          xlog=False,
+          ylog=False,
+          linestyle=chips.chips_solid,
+          linecolor=None,
+          symbolstyle=chips.chips_none,
+          symbolcolor=None,
+          symbolsize=None,
+          symbolfill=True,
+          linethickness=None,
+          xaxis=False,
+          ratioline=False):
 
     if (not overplot) and clearwindow:
         _clear_window()
 
     if yerrorbars and (yerr is not None) and xerrorbars and (xerr is not None):
         xerr = xerr / 2.
-        chips.add_curve(x, y, (yerr, yerr, xerr, xerr) )
+        chips.add_curve(x, y, (yerr, yerr, xerr, xerr))
     elif yerrorbars and (yerr is not None):
         chips.add_curve(x, y, yerr)
     else:
@@ -207,10 +207,10 @@ def _plot(x, y, yerr=None, xerr=None, title=None, xlabel=None, ylabel=None,
             chips.set_plot_ylabel(ylbl)
 
     if xaxis:
-        chips.add_hline(0);
+        chips.add_hline(0)
 
     if ratioline:
-        chips.add_hline(1);
+        chips.add_hline(1)
 
     #chips.limits(chips.X_AXIS, 'AUTO', 'AUTO')
 
@@ -288,7 +288,7 @@ def _contour(x0, x1, y, levels=None, title=None, xlabel=None, ylabel=None,
         _clear_window()
 
     # Catch NANs before sending to ChIPS
-    bad = list(numpy.where(numpy.isnan(y)==True)).pop(0)
+    bad = list(numpy.where(numpy.isnan(y) == True)).pop(0)
     bad_vals = numpy.array(y[bad])
     y[bad] = 0.0
 
@@ -333,33 +333,35 @@ def _contour(x0, x1, y, levels=None, title=None, xlabel=None, ylabel=None,
 
 
 def _set_subplot(row, col, nrows, ncols, clearaxes=True,
-                xgap=0.18,
-                ygap=0.18):
-    
+                 xgap=0.18,
+                 ygap=0.18):
+
     chips.add_plot()
     chips.grid_objects(ncols, nrows, xgap, ygap)
 
 
 def _set_jointplot(row, col, nrows, ncols, clearaxes=True,
-                  top=1,
-                  ratio=2):
-    
+                   top=1,
+                   ratio=2):
+
     # FIXME: misuse of kwarg clearaxes
     if not clearaxes:
         chips.strip_chart(nrows*ncols)
-        chips.adjust_grid_yrelsize(top,ratio)
+        chips.adjust_grid_yrelsize(top, ratio)
     else:
         chips.set_current_plot('plot2')
+
 
 def init():
     # This function now a no-op; structure kept in case
     # we want init to do something in future.
     pass
 
+
 def begin():
     global _initialized
 
-    chips.lock()    
+    chips.lock()
     chips.advanced.open_undo_buffer()
     if _initialized is False:
         try:
@@ -371,7 +373,7 @@ def begin():
             # plus this code only gets executed if the user has a [chips] section in sherpa.rc
             # which is the exception rather than the rule.
             # chips.add_window() # Have Sherpa talk to its own
-                               # chips window
+                # chips window
         except NoSectionError:
             chips.unlock()
         except:
@@ -379,33 +381,39 @@ def begin():
             raise
         _initialized = True
 
+
 def end():
     # Don't need to call redraw here ourselves, the
     # ChIPS undo buffer does what we need.
     chips.advanced.close_undo_buffer()
     chips.unlock()
 
+
 def exceptions():
     chips.advanced.discard_undo_buffer()
     chips.erase()
     chips.unlock()
 
+
 def clear_window(*args, **kwargs):
-    _chips_wrap( _clear_window, *args, **kwargs)
+    _chips_wrap(_clear_window, *args, **kwargs)
 
 
 def set_window_redraw(*args, **kwargs):
-    _chips_wrap( _set_window_redraw, *args, **kwargs)
+    _chips_wrap(_set_window_redraw, *args, **kwargs)
 
 
 def point(*args, **kwargs):
     _chips_wrap(_point, *args, **kwargs)
 
+
 def vline(*args, **kwargs):
     _chips_wrap(_vline, *args, **kwargs)
 
+
 def hline(*args, **kwargs):
     _chips_wrap(_hline, *args, **kwargs)
+
 
 def plot(*args, **kwargs):
     _chips_wrap(_plot, *args, **kwargs)
@@ -513,12 +521,14 @@ def get_contour_defaults():
 
 get_data_contour_defaults = get_contour_defaults
 
+
 def get_model_contour_defaults():
     d = get_contour_defaults()
     d['style'] = None
     d['color'] = 'red'
     d['thickness'] = 3
     return d
+
 
 def get_confid_contour_defaults():
     d = get_contour_defaults()
@@ -536,6 +546,7 @@ def get_fit_contour_defaults():
 get_resid_contour_defaults = get_data_contour_defaults
 get_ratio_contour_defaults = get_data_contour_defaults
 
+
 def get_model_histo_defaults():
     d = get_histo_defaults()
 #    d['linestyle'] = chips.chips_solid
@@ -544,20 +555,24 @@ def get_model_histo_defaults():
 
     return d
 
+
 def get_component_plot_defaults():
     d = get_model_plot_defaults()
     d['linecolor'] = 'orange'
     return d
+
 
 def get_component_histo_defaults():
     d = get_model_histo_defaults()
     d['linecolor'] = 'orange'
     return d
 
+
 def get_cdf_plot_defaults():
     d = get_model_plot_defaults()
     d['linecolor'] = 'red'
     return d
+
 
 def get_scatter_plot_defaults():
     d = get_data_plot_defaults()

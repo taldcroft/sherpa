@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -24,6 +24,7 @@ from sherpa.utils import SherpaTestCase, needs_data
 
 import logging
 error = logging.getLogger(__name__).error
+
 
 def is_proper_subclass(obj, cls):
     if type(cls) is not tuple:
@@ -53,14 +54,13 @@ class test_xspec(SherpaTestCase):
 
     def test_evaluate_model(self):
         m = xs.XSbbody()
-        out = m([1,2,3,4])
+        out = m([1, 2, 3, 4])
         if m.calc.__name__.startswith('C_'):
             otype = numpy.float64
         else:
             otype = numpy.float32
         self.assert_(out.dtype.type is otype)
         self.assertEqual(int(numpy.flatnonzero(out == 0.0)), 3)
-
 
     def test_xspec_models(self):
         models = [model for model in dir(xs) if model[:2] == 'XS']
@@ -75,10 +75,10 @@ class test_xspec(SherpaTestCase):
         for model in models:
             cls = getattr(xs, model)
             foo = cls('foo')
-            vals = foo(xlo,xhi)
+            vals = foo(xlo, xhi)
             try:
                 self.assert_(not numpy.isnan(vals).any() and
-                             not numpy.isinf(vals).any() )
+                             not numpy.isinf(vals).any())
             except AssertionError:
                 error('XS%s model evaluation failed' % model)
                 raise
@@ -93,22 +93,22 @@ class test_xspec(SherpaTestCase):
 
         model = ui.get_model("fabrizio")
         bare_model, _ = ui._session._get_model_status("fabrizio")
-        y = bare_model.calc([1,1], model.xlo, model.xhi)
+        y = bare_model.calc([1, 1], model.xlo, model.xhi)
         y_m = numpy.mean(y)
 
-        ui.set_analysis("fabrizio","wave")
+        ui.set_analysis("fabrizio", "wave")
 
         model2 = ui.get_model("fabrizio")
         bare_model2, _ = ui._session._get_model_status("fabrizio")
-        y2 = bare_model2.calc([1,1], model2.xlo, model2.xhi)
+        y2 = bare_model2.calc([1, 1], model2.xlo, model2.xhi)
         y2_m = numpy.mean(y2)
 
         self.assertAlmostEqual(y_m, y2_m)
 
     def test_xsxset_get(self):
-	# TEST CASE #1 Case insentitive keys
-	xs.set_xsxset('fooBar', 'somevalue')
-	self.assertEqual('somevalue', xs.get_xsxset('Foobar'))
+        # TEST CASE #1 Case insentitive keys
+        xs.set_xsxset('fooBar', 'somevalue')
+        self.assertEqual('somevalue', xs.get_xsxset('Foobar'))
 
 
 if __name__ == '__main__':

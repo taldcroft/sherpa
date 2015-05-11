@@ -12,12 +12,12 @@ outfile = file('/vobs/ASC_BUILD/src/pkg/sherpa/sherpa/slang/sherpa.sl',
 vparts = tuple(int(val) for val in sherpa.__versionstr__.split('.'))
 version_num = 10000*vparts[0] + 100*vparts[1] + vparts[2]
 
-exclude_funcs = ( 'calc_ftest', 'calc_mlr', 'get_xsabund', 'get_xscosmo',
-                  'get_xsxsect', 'set_xsabund', 'set_xscosmo', 'set_xsxsect',
-                  'rebin','histogram1d','histogram2d','gamma', 'lgam', 'erf',
-                  'igamc', 'igam', 'incbet')
+exclude_funcs = ('calc_ftest', 'calc_mlr', 'get_xsabund', 'get_xscosmo',
+                 'get_xsxsect', 'set_xsabund', 'set_xscosmo', 'set_xsxsect',
+                 'rebin', 'histogram1d', 'histogram2d', 'gamma', 'lgam', 'erf',
+                 'igamc', 'igam', 'incbet')
 
-non_funcs = ('Data1D', 'Data1DInt','Data2D', 'Data2DInt', 'DataARF',
+non_funcs = ('Data1D', 'Data1DInt', 'Data2D', 'Data2DInt', 'DataARF',
              'DataRMF', 'DataPHA', 'DataIMG', 'Prior')
 
 print >> outfile, """\
@@ -68,9 +68,9 @@ for module in (sherpa.all, sherpa.ui.utils, sherpa.astro.all,
     for name in dir(module):
         obj = getattr(module, name)
         if ((type(obj) is type(Exception)) and
-            issubclass(obj, sherpa.utils.err.SherpaErr) and
-            (obj is not sherpa.utils.err.SherpaErr) and
-            (obj not in err_types)):
+                issubclass(obj, sherpa.utils.err.SherpaErr) and
+                (obj is not sherpa.utils.err.SherpaErr) and
+                (obj not in err_types)):
             err_types.append(obj)
             print >> outfile, """\
 #ifnexists Sherpa%s
@@ -78,7 +78,7 @@ new_exception("Sherpa%s", SherpaErr, "Sherpa %s");
 #endif
 py2sl_errormap[py.%s.%s] = Sherpa%s;
 """ % (obj.__name__, obj.__name__, obj.__name__.replace('Err', ' Err'),
-       obj.__module__, obj.__name__, obj.__name__)
+                obj.__module__, obj.__name__, obj.__name__)
 
 print >> outfile, """\
 
@@ -131,14 +131,14 @@ for name in dir(ui):
         """ % (nameclass, name)
 
         if not name in exclude_funcs:
-            if sherpa.utils.get_num_args( obj )[1] > 0:
+            if sherpa.utils.get_num_args(obj)[1] > 0:
                 print >> outfile, '''\
     if( _NARGS == 0 ) {
        () = fprintf(stderr, "%s", "%s");
        return;
     }
     ''' % ( '%s\\n', sherpa.utils.get_func_usage( obj ) )
-        
+
         print >> outfile, """\
     %% Interface from S-lang keyword args to PySL keyword args
     if( kwargs == NULL ) {
@@ -151,7 +151,7 @@ for name in dir(ui):
     }
 }
         """ % (name, name)
-    
+
 
 print >> outfile, """\
 %% The autoassign function must be declared public (i.e. global) so that it

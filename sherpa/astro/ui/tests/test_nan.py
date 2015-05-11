@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2013  Smithsonian Astrophysical Observatory
 #
 #
@@ -18,7 +18,6 @@
 #
 
 
-
 from sherpa.utils import SherpaTest, SherpaTestCase, needs_data
 import sherpa.astro.ui as ui
 import logging
@@ -26,7 +25,9 @@ import os
 import numpy
 logger = logging.getLogger("sherpa")
 
+
 class test_more_ui(SherpaTestCase):
+
     def assign_model(self, name, obj):
         self.locals[name] = obj
 
@@ -45,7 +46,7 @@ class test_more_ui(SherpaTestCase):
         self.nan = self.datadir + '/ciao4.3/filternan/with_nan.fits'
         logger.setLevel(logging.ERROR)
 
-    #bug 12784
+    # bug 12784
     @needs_data
     def test_filter_nan(self):
         self.run_thread('filternan')

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -26,9 +26,9 @@ from sherpa.data import Data1D, Data1DInt, Data2D, Data2DInt
 from sherpa.logposterior import Prior
 
 # We build up __all__ as we go along
-__all__ = ['calc_mlr', 'calc_ftest','Data1D', 'Data1DInt',
+__all__ = ['calc_mlr', 'calc_ftest', 'Data1D', 'Data1DInt',
            'Data2D', 'Data2DInt', 'rebin', 'histogram1d',
-           'histogram2d','gamma', 'lgam', 'erf', 'igamc',
+           'histogram2d', 'gamma', 'lgam', 'erf', 'igamc',
            'igam', 'incbet', 'Prior', 'multinormal_pdf', 'multit_pdf']
 
 _session = utils.Session()

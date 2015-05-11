@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2010  Smithsonian Astrophysical Observatory
 #
 #
@@ -21,6 +21,7 @@ import numpy
 from sherpa.utils import *
 from sherpa.utils import SherpaFloat
 
+
 class test_utils(SherpaTestCase):
 
     def setUp(self):
@@ -34,6 +35,7 @@ class test_utils(SherpaTestCase):
 
     def test_NoNewAttributesAfterInit(self):
         class C(NoNewAttributesAfterInit):
+
             def __init__(self):
                 self.x = 1
                 self.y = 2
@@ -53,6 +55,7 @@ class test_utils(SherpaTestCase):
 
     def test_export_method(self):
         class C(object):
+
             def m(self, x, y=2):
                 'Instance method m()'
                 return x * y
@@ -87,7 +90,7 @@ class test_utils(SherpaTestCase):
                              meth.__name__)
 
         # Non-method argument
-        def f(x):  return 2*x
+        def f(x): return 2*x
         self.assert_(export_method(f) is f)
 
         # Name and module name
@@ -105,7 +108,7 @@ class test_utils(SherpaTestCase):
 
     def test_get_keyword_defaults(self):
         self.assertEqual(get_keyword_defaults(self.f1), {})
-        d = {'b':1, 'c':2, 'd':3, 'e':4}
+        d = {'b': 1, 'c': 2, 'd': 3, 'e': 4}
         self.assertEqual(get_keyword_defaults(self.f2), d)
         del d['b']
         del d['c']
@@ -118,8 +121,8 @@ class test_utils(SherpaTestCase):
                          'a   = 3\nbb  = Ham\nccc = Float64[3]')
 
     def test_calc_total_error(self):
-        stat = numpy.array([1,2])
-        sys = numpy.array([3,4])
+        stat = numpy.array([1, 2])
+        sys = numpy.array([3, 4])
         self.assert_(calc_total_error(None, None) is None)
         self.assert_(calc_total_error(stat, None) is stat)
         self.assert_(calc_total_error(None, sys) is sys)
@@ -145,49 +148,48 @@ class test_utils(SherpaTestCase):
         self.assertRaises(ValueError, poisson_noise, 'ham')
         self.assertRaises(TypeError, poisson_noise, [1, 2, 'ham'])
 
-
-    def test_neville( self ):
+    def test_neville(self):
         func = numpy.exp
         tol = 1.0e-6
         num = 10
         x = []
         y = []
-        for ii in xrange( num ):
-            x.append( ii / float( num ) )
-            y.append( func( x[ ii ] ) )
-        xx = numpy.array( x )
-        yy = numpy.array( y )
-        for ii in xrange( num ):
-            tmp = 1.01 * ( ii/ float( num ) )
-            answer = func( tmp )
-            val = neville( tmp, xx, yy )
-            self.assert_( Knuth_close( answer, val, tol ) )
+        for ii in xrange(num):
+            x.append(ii / float(num))
+            y.append(func(x[ii]))
+        xx = numpy.array(x)
+        yy = numpy.array(y)
+        for ii in xrange(num):
+            tmp = 1.01 * (ii / float(num))
+            answer = func(tmp)
+            val = neville(tmp, xx, yy)
+            self.assert_(Knuth_close(answer, val, tol))
 
-    def test_neville2d( self ):
+    def test_neville2d(self):
         funcx = numpy.sin
         funcy = numpy.exp
         nrow = 10
         ncol = 10
         tol = 1.0e-4
-        x = numpy.zeros( (nrow,) )
-        y = numpy.zeros( (ncol,) )
-        fval = numpy.empty( ( nrow, ncol ) )
+        x = numpy.zeros((nrow,))
+        y = numpy.zeros((ncol,))
+        fval = numpy.empty((nrow, ncol))
         row_tmp = numpy.pi / nrow
-        col_tmp = 1.0 / float( ncol )
-        for row in xrange( nrow ):
-            x[ row ] = ( row + 1.0 ) * row_tmp
-            for col in xrange( ncol ):
-                y[ col ] = ( col + 1.0 ) / float( ncol )
-                fval[ row ][ col ] = funcx( x[ row ] ) * funcy( y[ col ] )
+        col_tmp = 1.0 / float(ncol)
+        for row in xrange(nrow):
+            x[row] = (row + 1.0) * row_tmp
+            for col in xrange(ncol):
+                y[col] = (col + 1.0) / float(ncol)
+                fval[row][col] = funcx(x[row]) * funcy(y[col])
 
-        for row in xrange( ncol ):
-            xx = ( -0.1 + ( row + 1.0 ) / float( nrow ) ) * numpy.pi
-            for col in xrange( 4 ):
-                yy = -0.1 +( col + 1.0 )/ float( ncol )
-                answer = funcx( xx ) * funcy( yy )
-                val = neville2d( xx, yy, x, y, fval )
-                self.assert_( Knuth_close( answer, val, tol ) )
-    
+        for row in xrange(ncol):
+            xx = (-0.1 + (row + 1.0) / float(nrow)) * numpy.pi
+            for col in xrange(4):
+                yy = -0.1 + (col + 1.0) / float(ncol)
+                answer = funcx(xx) * funcy(yy)
+                val = neville2d(xx, yy, x, y, fval)
+                self.assert_(Knuth_close(answer, val, tol))
+
     def test_parallel_map(self):
 
         ncpus = 1
@@ -199,7 +201,7 @@ class test_utils(SherpaTestCase):
             return
 
         numtasks = 8
-        size = (64,64)
+        size = (64, 64)
         vals = numpy.random.rand(*size)
         f = numpy.linalg.eigvals
         iterable = [vals]*numtasks
@@ -213,7 +215,6 @@ class test_utils(SherpaTestCase):
 
         self.assert_((numpy.asarray(result) == numpy.asarray(pararesult)).all())
         self.assert_((numpy.asarray(result) == numpy.asarray(poolresult)).all())
-
 
 
 if __name__ == '__main__':

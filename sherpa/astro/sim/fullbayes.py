@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -30,14 +30,13 @@ class FullBayes(PragBayes):
 
     def __init__(self, fcn, sigma, mu, dof, fit, *args):
         PragBayes.__init__(self, fcn, sigma, mu, dof, fit, *args)
-        self.arf_dicts = [{'current' : arf.specresp.copy(), 'old_rr' : None }
+        self.arf_dicts = [{'current': arf.specresp.copy(), 'old_rr': None}
                           for arf in self.arfs]
-
 
     def init(self, log=False, inv=False, defaultprior=True, priorshape=False,
              priors=(), originalscale=True, scale=1, sigma_m=False, p_M=.5,
              simarf=None, p_M_arf=.5, sigma_arf=0.1):
-        # nsubiters is missing from init() to indicate that nubiters=1 for 
+        # nsubiters is missing from init() to indicate that nubiters=1 for
         # full bayes
 
         if isinstance(simarf, (PCA1DAdd,)):
@@ -46,7 +45,7 @@ class FullBayes(PragBayes):
             self.simarf = ARFSIMFactory()(simarf)
 
         if not isinstance(self.simarf, (PCA1DAdd,)):
-            raise TypeError("Simulation ARF must be PCA for FullBayes" + 
+            raise TypeError("Simulation ARF must be PCA for FullBayes" +
                             " not %s" % type(self.simarf).__name__)
 
         self.accept_arfs = [0]
@@ -55,10 +54,9 @@ class FullBayes(PragBayes):
         return MetropolisMH.init(self, log, inv, defaultprior, priorshape,
                                  priors, originalscale, scale, sigma_m, p_M)
 
-
     def _update_arf(self, arf, specresp, current_params, current_stat, arf_dict):
 
-        u = np.random.uniform(0,1,1)
+        u = np.random.uniform(0, 1, 1)
         if u > self.p_M_arf:
 
             ncomp = self.simarf.ncomp
@@ -74,13 +72,13 @@ class FullBayes(PragBayes):
 
             stat_temp = self.calc_fit_stat(self._mu)
 
-            mu0  = np.repeat(0,ncomp)
-            sig0 = np.diag(np.repeat(1,ncomp))
-            accept_pr = dmvnorm(new_rr,mu0,sig0)-dmvnorm(old_rr,mu0,sig0)
+            mu0 = np.repeat(0, ncomp)
+            sig0 = np.diag(np.repeat(1, ncomp))
+            accept_pr = dmvnorm(new_rr, mu0, sig0)-dmvnorm(old_rr, mu0, sig0)
             accept_pr += stat_temp - current_stat
-            accept_pr = np.exp( accept_pr )
+            accept_pr = np.exp(accept_pr)
 
-            uu = np.random.uniform(0,1,1)
+            uu = np.random.uniform(0, 1, 1)
             if accept_pr > uu:
                 arf_dict['old_rr'] = new_rr
                 arf_dict['current'] = arf.specresp.copy()
@@ -99,13 +97,13 @@ class FullBayes(PragBayes):
             # Update the ARFs with new deviates
 
             arf.specresp = self.simarf.add_deviations(specresp)
-            
-            stat_temp = self.calc_fit_stat(self._mu)
-            accept_pr=0
-            accept_pr += stat_temp - current_stat
-            accept_pr = np.exp( accept_pr )
 
-            uu = np.random.uniform(0,1,1)
+            stat_temp = self.calc_fit_stat(self._mu)
+            accept_pr = 0
+            accept_pr += stat_temp - current_stat
+            accept_pr = np.exp(accept_pr)
+
+            uu = np.random.uniform(0, 1, 1)
             if accept_pr > uu:
                 arf_dict['current'] = arf.specresp.copy()
                 self.accept_arf()
@@ -118,19 +116,16 @@ class FullBayes(PragBayes):
                 arf.specresp = arf_dict['current']
                 self.reject_arf()
 
-
     def accept_arf(self):
         # Accept the updated ARF deviates
         self.accept_arfs.append(self.accept_arfs[-1] + 1)
-
 
     def reject_arf(self):
         # Reject
         self.accept_arfs.append(self.accept_arfs[-1])
 
-
     def perturb_arf(self, current_params, current_stat):
-        if self.simarf is not None:         
+        if self.simarf is not None:
 
             # add deviations starting with original ARF for each iter
             for specresp, arf, arf_dict in zip(self.backup_arfs, self.arfs, self.arf_dicts):

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2009  Smithsonian Astrophysical Observatory
 #
 #
@@ -42,7 +42,7 @@ from ConfigParser import ConfigParser
 config = ConfigParser()
 config.read(get_config())
 
-plot_opt = config.get('options','plot_pkg')
+plot_opt = config.get('options', 'plot_pkg')
 plot_opt = str(plot_opt).strip().lower() + '_backend'
 if plot_opt == 'matplotlib_backend':
     plot_opt = 'pylab_backend'
@@ -62,14 +62,13 @@ except:
 backend.init()
 
 
-
 __all__ = ('Plot', 'Contour', 'Point', 'SplitPlot', 'JointPlot',
            'DataPlot', 'DataContour', 'DelchiPlot', 'ComponentModelPlot',
            'ModelPlot', 'ModelContour', 'FitPlot', 'FitContour',
-           'ResidPlot', 'ResidContour','RatioPlot', 'RatioContour',
+           'ResidPlot', 'ResidContour', 'RatioPlot', 'RatioContour',
            'IntervalProjection', 'IntervalUncertainty', 'ChisqrPlot',
            'RegionProjection', 'RegionUncertainty', 'ComponentSourcePlot',
-           'PSFPlot','PSFContour','begin', 'end', 'exceptions', 'backend',
+           'PSFPlot', 'PSFContour', 'begin', 'end', 'exceptions', 'backend',
            'SourcePlot', 'SourceContour', 'Histogram')
 
 _stats_noerr = ('cash', 'cstat', 'leastsq')
@@ -80,9 +79,10 @@ exceptions = backend.exceptions
 
 
 class Plot(NoNewAttributesAfterInit):
+
     "Base class for line plots"
     plot_prefs = backend.get_plot_defaults()
-    
+
     def __init__(self):
         """
 
@@ -93,11 +93,10 @@ class Plot(NoNewAttributesAfterInit):
         Once an instance of Plot is initialized no new
         attributes of the class can be made. (To eliminate
         the accidental creation of erroneous attributes)
-        
+
         """
         self.plot_prefs = self.plot_prefs.copy()
         NoNewAttributesAfterInit.__init__(self)
-
 
     @staticmethod
     def vline(x, ymin=0, ymax=1,
@@ -107,7 +106,6 @@ class Plot(NoNewAttributesAfterInit):
                       linestyle=linestyle, linewidth=linewidth,
                       overplot=overplot, clearwindow=clearwindow)
 
-
     @staticmethod
     def hline(y, xmin=0, xmax=1,
               linecolor=None, linestyle=None, linewidth=None,
@@ -115,7 +113,6 @@ class Plot(NoNewAttributesAfterInit):
         backend.hline(y, xmin=xmin, xmax=xmax, linecolor=linecolor,
                       linestyle=linestyle, linewidth=linewidth,
                       overplot=overplot, clearwindow=clearwindow)
-
 
     def plot(self, x, y, yerr=None, xerr=None, title=None, xlabel=None,
              ylabel=None, overplot=False, clearwindow=True):
@@ -126,10 +123,12 @@ class Plot(NoNewAttributesAfterInit):
         kwargs['overplot'] = True
         self.plot(*args, **kwargs)
 
+
 class Contour(NoNewAttributesAfterInit):
+
     "Base class for contour plots"
     contour_prefs = backend.get_contour_defaults()
-    
+
     def __init__(self):
         """
 
@@ -140,11 +139,11 @@ class Contour(NoNewAttributesAfterInit):
         Once an instance of Contour is initialized no new
         attributes of the class can be made. (To eliminate
         the accidental creation of erroneous attributes)
-        
+
         """
         self.contour_prefs = self.contour_prefs.copy()
         NoNewAttributesAfterInit.__init__(self)
-        
+
     def contour(self, x0, x1, y, levels=None, title=None, xlabel=None,
                 ylabel=None, overcontour=False, clearwindow=True):
         backend.contour(x0, x1, y, levels, title, xlabel, ylabel, overcontour,
@@ -153,8 +152,10 @@ class Contour(NoNewAttributesAfterInit):
     def overcontour(self, *args, **kwargs):
         kwargs['overcontour'] = True
         self.contour(*args, **kwargs)
-        
+
+
 class Point(NoNewAttributesAfterInit):
+
     "Base class for point plots"
     point_prefs = backend.get_point_defaults()
 
@@ -168,16 +169,17 @@ class Point(NoNewAttributesAfterInit):
         Once an instance of Point is initialized no new
         attributes of the class can be made. (To eliminate
         the accidental creation of erroneous attributes)
-        
+
         """
         self.point_prefs = self.point_prefs.copy()
         NoNewAttributesAfterInit.__init__(self)
-        
+
     def point(self, x, y, overplot=True, clearwindow=False):
         backend.point(x, y, overplot, clearwindow, **self.point_prefs)
 
 
 class Histogram(NoNewAttributesAfterInit):
+
     "Base class for histogram plots"
     histo_prefs = backend.get_histo_defaults()
 
@@ -199,7 +201,7 @@ class Histogram(NoNewAttributesAfterInit):
     def plot(self, xlo, xhi, y, yerr=None, title=None, xlabel=None,
              ylabel=None, overplot=False, clearwindow=True):
         backend.histo(xlo, xhi, y, yerr, title, xlabel, ylabel, overplot,
-                     clearwindow, **self.histo_prefs)
+                      clearwindow, **self.histo_prefs)
 
     def overplot(self, *args, **kwargs):
         kwargs['overplot'] = True
@@ -211,7 +213,7 @@ class HistogramPlot(Histogram):
     def __init__(self):
         self.xlo = None
         self.xhi = None
-        self.y  = None
+        self.y = None
         self.xlabel = None
         self.ylabel = None
         self.title = None
@@ -220,16 +222,19 @@ class HistogramPlot(Histogram):
     def __str__(self):
         xlo = self.xlo
         if self.xlo is not None:
-            xlo = numpy.array2string(numpy.asarray(self.xlo), separator=',', precision=4, suppress_small=False)
+            xlo = numpy.array2string(
+                numpy.asarray(self.xlo), separator=',', precision=4, suppress_small=False)
 
         xhi = self.xhi
         if self.xhi is not None:
-            xhi = numpy.array2string(numpy.asarray(self.xhi), separator=',', precision=4, suppress_small=False)
+            xhi = numpy.array2string(
+                numpy.asarray(self.xhi), separator=',', precision=4, suppress_small=False)
 
         y = self.y
         if self.y is not None:
-            y = numpy.array2string(numpy.asarray(self.y), separator=',', precision=4, suppress_small=False)
-        
+            y = numpy.array2string(
+                numpy.asarray(self.y), separator=',', precision=4, suppress_small=False)
+
         return (('xlo    = %s\n' +
                  'xhi    = %s\n' +
                  'y      = %s\n' +
@@ -237,13 +242,13 @@ class HistogramPlot(Histogram):
                  'ylabel = %s\n' +
                  'title  = %s\n' +
                  'histo_prefs = %s') %
-                ( xlo,
-                  xhi,
-                  y,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.histo_prefs))
+                (xlo,
+                 xhi,
+                 y,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.histo_prefs))
 
     def plot(self, overplot=False, clearwindow=True):
         Histogram.plot(self, self.xlo, self.xhi, self.y, title=self.title,
@@ -257,13 +262,13 @@ class PDFPlot(HistogramPlot):
         self.points = None
         HistogramPlot.__init__(self)
 
-
     def __str__(self):
         points = self.points
         if self.points is not None:
-            points = numpy.array2string(numpy.asarray(self.points), separator=',', precision=4, suppress_small=False)
+            points = numpy.array2string(
+                numpy.asarray(self.points), separator=',', precision=4, suppress_small=False)
 
-        return ('points = %s\n'%(points) +
+        return ('points = %s\n' % (points) +
                 HistogramPlot.__str__(self))
 
     def prepare(self, points, bins=12, normed=True, xlabel="x", name="x"):
@@ -273,12 +278,11 @@ class PDFPlot(HistogramPlot):
         self.xhi = xx[1:]
         self.ylabel = "probability density"
         self.xlabel = xlabel
-        self.title  = "PDF: %s"%name
-
+        self.title = "PDF: %s" % name
 
 
 class CDFPlot(Plot):
-    
+
     median_defaults = dict(linestyle='dash', linecolor='orange',
                            linewidth=1.5)
     lower_defaults = dict(linestyle='dash', linecolor='blue',
@@ -287,19 +291,18 @@ class CDFPlot(Plot):
                           linewidth=1.5)
 
     plot_prefs = backend.get_cdf_plot_defaults()
-    
+
     def __init__(self):
-        self.x  = None
-        self.y  = None
+        self.x = None
+        self.y = None
         self.points = None
         self.median = None
-        self.lower  = None
-        self.upper  = None
+        self.lower = None
+        self.upper = None
         self.xlabel = None
         self.ylabel = None
         self.title = None
         Plot.__init__(self)
-
 
     def __str__(self):
         x = self.x
@@ -311,7 +314,8 @@ class CDFPlot(Plot):
 
         points = self.points
         if self.points is not None:
-            points = numpy.array2string(self.points, separator=',', precision=4, suppress_small=False)
+            points = numpy.array2string(
+                self.points, separator=',', precision=4, suppress_small=False)
 
         return (('points = %s\n' +
                  'x      = %s\n' +
@@ -323,17 +327,16 @@ class CDFPlot(Plot):
                  'ylabel = %s\n' +
                  'title  = %s\n' +
                  'plot_prefs = %s') %
-                ( x,
-                  y,
-                  points,
-                  self.median,
-                  self.lower,
-                  self.upper,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.plot_prefs))
-
+                (x,
+                 y,
+                 points,
+                 self.median,
+                 self.lower,
+                 self.upper,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.plot_prefs))
 
     def prepare(self, points, xlabel="x", name="x"):
         self.points = points
@@ -343,9 +346,8 @@ class CDFPlot(Plot):
         xsize = len(self.x)
         self.y = (numpy.arange(xsize) + 1.0) / xsize
         self.xlabel = xlabel
-        self.ylabel = "p(<=%s)"%(xlabel)
-        self.title  = "CDF: %s"%(name)
-
+        self.ylabel = "p(<=%s)" % (xlabel)
+        self.title = "CDF: %s" % (name)
 
     def plot(self, overplot=False, clearwindow=True):
         Plot.plot(self, self.x, self.y, title=self.title,
@@ -353,30 +355,31 @@ class CDFPlot(Plot):
                   overplot=overplot, clearwindow=clearwindow)
         Plot.vline(self.median, overplot=True, clearwindow=False,
                    **self.median_defaults)
-        Plot.vline(self.lower, overplot=True, clearwindow=False, 
+        Plot.vline(self.lower, overplot=True, clearwindow=False,
                    **self.lower_defaults)
         Plot.vline(self.upper, overplot=True, clearwindow=False,
                    **self.upper_defaults)
 
 
 class LRHistogram(HistogramPlot):
-    "Derived class for creating 1D likelihood ratio distribution plots"
-    def __init__(self):
-        self.ratios=None
-        self.lr=None
-        self.ppp=None
-        HistogramPlot.__init__(self)
 
+    "Derived class for creating 1D likelihood ratio distribution plots"
+
+    def __init__(self):
+        self.ratios = None
+        self.lr = None
+        self.ppp = None
+        HistogramPlot.__init__(self)
 
     def __str__(self):
         ratios = self.ratios
         if self.ratios is not None:
-            ratios = numpy.array2string(numpy.asarray(self.ratios), separator=',', precision=4, suppress_small=False)
+            ratios = numpy.array2string(
+                numpy.asarray(self.ratios), separator=',', precision=4, suppress_small=False)
 
         return '\n'.join(['ratios = %s' % ratios,
                           'lr = %s' % str(self.lr),
                           HistogramPlot.__str__(self)])
-
 
     def prepare(self, ratios, bins, niter, lr, ppp):
         self.ppp = float(ppp)
@@ -385,11 +388,10 @@ class LRHistogram(HistogramPlot):
         self.ratios = y
         self.xlo, self.xhi = dataspace1d(y.min(), y.max(), numbins=bins+1)[:2]
         y = histogram1d(y, self.xlo, self.xhi)
-	self.y = y/float(niter)
+        self.y = y/float(niter)
         self.title = "Likelihood Ratio Distribution"
         self.xlabel = "Likelihood Ratio"
         self.ylabel = "Frequency"
-
 
     def plot(self, overplot=False, clearwindow=True):
         Histogram.plot(self, self.xlo, self.xhi, self.y, title=self.title,
@@ -402,7 +404,8 @@ class LRHistogram(HistogramPlot):
                            linewidth=1.5, overplot=True, clearwindow=False)
 
 
-class SplitPlot(Plot,Contour):
+class SplitPlot(Plot, Contour):
+
     "Derived class for creating multiple plots"
     plot_prefs = backend.get_split_plot_defaults()
 
@@ -415,9 +418,9 @@ class SplitPlot(Plot,Contour):
         return (('rows   = %s\n' +
                  'cols   = %s\n' +
                  'plot_prefs = %s') %
-                ( self.rows,
-                  self.cols,
-                  self.plot_prefs))
+                (self.rows,
+                 self.cols,
+                 self.plot_prefs))
 
     def reset(self, rows=2, cols=1):
         self.rows = rows
@@ -432,7 +435,7 @@ class SplitPlot(Plot,Contour):
             self._cleared_window = True
 
     def _reset_used(self):
-        self._used = numpy.zeros((self.rows, self.cols), numpy.bool_)        
+        self._used = numpy.zeros((self.rows, self.cols), numpy.bool_)
 
     def _next_subplot(self):
         row, col = numpy.where(self._used == False)
@@ -450,7 +453,7 @@ class SplitPlot(Plot,Contour):
     def addcontour(self, plot, *args, **kwargs):
         row, col = self._next_subplot()
         self.contour(row, col, plot, *args, **kwargs)
-    
+
     def plot(self, row, col, plot, *args, **kwargs):
         self._clear_window()
         clearaxes = ((not kwargs.get('overplot', False)) and
@@ -478,15 +481,15 @@ class SplitPlot(Plot,Contour):
 
         self._used[row, col] = True
         self._current = (row, col)
-    
+
     def overlayplot(self, plot, *args, **kwargs):
         self.overplot(self._current[0], self._current[1], plot, *args,
                       **kwargs)
 
     def overlaycontour(self, plot, *args, **kwargs):
         self.overcontour(self._current[0], self._current[1], plot, *args,
-                      **kwargs)
-        
+                         **kwargs)
+
     # FIXME: work on overplot issue
     def overplot(self, row, col, plot, *args, **kwargs):
         kwargs['overplot'] = True
@@ -496,7 +499,9 @@ class SplitPlot(Plot,Contour):
         kwargs['overcontour'] = True
         self.contour(row, col, plot, *args, **kwargs)
 
+
 class JointPlot(SplitPlot):
+
     def __init__(self):
         SplitPlot.__init__(self)
 
@@ -510,37 +515,38 @@ class JointPlot(SplitPlot):
         else:
             # FIXME: misuse of kwarg clearaxes for chips backend
             backend.set_jointplot(row, col, self.rows, self.cols)
-    
+
     def plottop(self, plot, *args, **kwargs):
         clearaxes = kwargs.get('clearwindow', True)
-        self._clear_window(0,0,clearaxes)
-        
+        self._clear_window(0, 0, clearaxes)
+
         # FIXME: should not know about FitPlot, terrible hack to remove label
-        if isinstance(plot,FitPlot):
-            plot.dataplot.xlabel=''
-            plot.modelplot.xlabel=''
+        if isinstance(plot, FitPlot):
+            plot.dataplot.xlabel = ''
+            plot.modelplot.xlabel = ''
         else:
-            plot.xlabel=''
+            plot.xlabel = ''
 
         kwargs['clearwindow'] = False
         plot.plot(*args, **kwargs)
 
     def plotbot(self, plot, *args, **kwargs):
-        self._clear_window(1,0)
-          
+        self._clear_window(1, 0)
+
         # FIXME: terrible hack to remove title from bottom
-        plot.title=''
+        plot.title = ''
         kwargs['clearwindow'] = False
         plot.plot(*args, **kwargs)
 
 
 class DataPlot(Plot):
+
     "Derived class for creating 1D data plots"
     plot_prefs = backend.get_data_plot_defaults()
-    
+
     def __init__(self):
-        self.x  = None
-        self.y  = None
+        self.x = None
+        self.y = None
         self.yerr = None
         self.xerr = None
         self.xlabel = None
@@ -564,7 +570,7 @@ class DataPlot(Plot):
         xerr = self.xerr
         if self.xerr is not None:
             xerr = numpy.array2string(self.xerr, separator=',', precision=4, suppress_small=False)
-            
+
         return (('x      = %s\n' +
                  'y      = %s\n' +
                  'yerr   = %s\n' +
@@ -573,22 +579,23 @@ class DataPlot(Plot):
                  'ylabel = %s\n' +
                  'title  = %s\n' +
                  'plot_prefs = %s') %
-                ( x,
-                  y,
-                  yerr,
-                  xerr,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.plot_prefs))
-        
+                (x,
+                 y,
+                 yerr,
+                 xerr,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.plot_prefs))
+
     def prepare(self, data, stat=None):
         (self.x, self.y, self.yerr, self.xerr, self.xlabel,
          self.ylabel) = data.to_plot()
 
-        #if self.yerr is None and stat is not None:
+        # if self.yerr is None and stat is not None:
         if stat is not None:
-            msg = ("The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
+            msg = (
+                "The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
             if stat.name in _stats_noerr:
                 self.yerr = data.get_yerr(True, Chi2XspecVar.calc_staterror)
                 warning(msg)
@@ -608,13 +615,13 @@ class DataPlot(Plot):
 class TracePlot(DataPlot):
 
     plot_prefs = backend.get_model_plot_defaults()
-    
+
     def prepare(self, points, xlabel="x", name="x"):
         self.x = numpy.arange(len(points), dtype=SherpaFloat)
         self.y = points
         self.xlabel = "iteration"
         self.ylabel = name
-        self.title  = "Trace: %s"%(name)
+        self.title = "Trace: %s" % (name)
 
 
 class ScatterPlot(DataPlot):
@@ -626,10 +633,11 @@ class ScatterPlot(DataPlot):
         self.y = numpy.asarray(y, dtype=SherpaFloat)
         self.xlabel = xlabel
         self.ylabel = ylabel
-        self.title  = "Scatter: %s"%(name)
+        self.title = "Scatter: %s" % (name)
 
 
 class PSFKernelPlot(DataPlot):
+
     "Derived class for creating 1D PSF kernel data plots"
 
     def prepare(self, psf, data=None, stat=None):
@@ -637,17 +645,18 @@ class PSFKernelPlot(DataPlot):
         DataPlot.prepare(self, psfdata, stat)
         #self.ylabel = 'PSF value'
         #self.xlabel = 'PSF Kernel size'
-        self.title  = 'PSF Kernel'
+        self.title = 'PSF Kernel'
 
 
 class DataContour(Contour):
+
     "Derived class for creating 2D data contours"
     contour_prefs = backend.get_data_contour_defaults()
-    
+
     def __init__(self):
         self.x0 = None
         self.x1 = None
-        self.y  = None
+        self.y = None
         self.xlabel = None
         self.ylabel = None
         self.title = None
@@ -675,26 +684,28 @@ class DataContour(Contour):
                  'title  = %s\n' +
                  'levels = %s\n' +
                  'contour_prefs = %s') %
-                ( x0,
-                  x1,
-                  y,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.levels,
-                  self.contour_prefs))
-        
+                (x0,
+                 x1,
+                 y,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.levels,
+                 self.contour_prefs))
+
     def prepare(self, data, stat=None):
         (self.x0, self.x1, self.y, self.xlabel,
          self.ylabel) = data.to_contour()
         self.title = data.name
-           
+
     def contour(self, overcontour=False, clearwindow=True):
         Contour.contour(self, self.x0, self.x1, self.y,
-                        self.levels,self.title, self.xlabel,
+                        self.levels, self.title, self.xlabel,
                         self.ylabel, overcontour, clearwindow)
 
+
 class PSFKernelContour(DataContour):
+
     "Derived class for creating 2D PSF Kernel contours"
 
     def prepare(self, psf, data=None, stat=None):
@@ -702,16 +713,17 @@ class PSFKernelContour(DataContour):
         DataContour.prepare(self, psfdata)
         #self.xlabel = 'PSF Kernel size x0'
         #self.ylabel = 'PSF Kernel size x1'
-        self.title  = 'PSF Kernel'
+        self.title = 'PSF Kernel'
 
 
 class ModelPlot(Plot):
+
     "Derived class for creating 1D model plots"
     plot_prefs = backend.get_model_plot_defaults()
-    
+
     def __init__(self):
-        self.x  = None
-        self.y  = None
+        self.x = None
+        self.y = None
         self.yerr = None
         self.xerr = None
         self.xlabel = None
@@ -735,7 +747,7 @@ class ModelPlot(Plot):
         xerr = self.xerr
         if self.xerr is not None:
             xerr = numpy.array2string(self.xerr, separator=',', precision=4, suppress_small=False)
-        
+
         return (('x      = %s\n' +
                  'y      = %s\n' +
                  'yerr   = %s\n' +
@@ -744,20 +756,20 @@ class ModelPlot(Plot):
                  'ylabel = %s\n' +
                  'title  = %s\n' +
                  'plot_prefs = %s') %
-                ( x,
-                  y,
-                  yerr,
-                  xerr,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.plot_prefs))
+                (x,
+                 y,
+                 yerr,
+                 xerr,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.plot_prefs))
 
     def prepare(self, data, model, stat=None):
         (self.x, self.y, self.yerr, self.xerr,
          self.xlabel, self.ylabel) = data.to_plot(yfunc=model)
         self.y = self.y[1]
-            
+
     def plot(self, overplot=False, clearwindow=True):
         Plot.plot(self, self.x, self.y, title=self.title, xlabel=self.xlabel,
                   ylabel=self.ylabel, overplot=overplot, clearwindow=clearwindow)
@@ -783,7 +795,9 @@ class ComponentTemplateModelPlot(ComponentModelPlot):
 
 
 class SourcePlot(ModelPlot):
+
     "Derived class for creating 1D model plots"
+
     def __init__(self):
         ModelPlot.__init__(self)
         self.title = 'Source'
@@ -815,9 +829,8 @@ class ComponentTemplateSourcePlot(ComponentSourcePlot):
         self.title = 'Source model component: %s' % model.name
 
 
-
-
 class PSFPlot(DataPlot):
+
     "Derived class for creating 1D PSF kernel data plots"
 
     def prepare(self, psf, data=None, stat=None):
@@ -827,13 +840,14 @@ class PSFPlot(DataPlot):
 
 
 class ModelContour(Contour):
+
     "Derived class for creating 2D model contours"
     contour_prefs = backend.get_model_contour_defaults()
-    
+
     def __init__(self):
         self.x0 = None
         self.x1 = None
-        self.y  = None
+        self.y = None
         self.xlabel = None
         self.ylabel = None
         self.title = 'Model'
@@ -844,15 +858,15 @@ class ModelContour(Contour):
         x0 = self.x0
         if self.x0 is not None:
             x0 = numpy.array2string(self.x0, separator=',', precision=4, suppress_small=False)
-            
+
         x1 = self.x1
         if self.x1 is not None:
             x1 = numpy.array2string(self.x1, separator=',', precision=4, suppress_small=False)
-            
+
         y = self.y
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
-            
+
         return (('x0     = %s\n' +
                  'x1     = %s\n' +
                  'y      = %s\n' +
@@ -861,14 +875,14 @@ class ModelContour(Contour):
                  'title  = %s\n' +
                  'levels = %s\n' +
                  'contour_prefs = %s') %
-                ( x0,
-                  x1,
-                  y,
-                  self.xlabel,
-                  self.ylabel,
-                  self.title,
-                  self.levels,
-                  self.contour_prefs))
+                (x0,
+                 x1,
+                 y,
+                 self.xlabel,
+                 self.ylabel,
+                 self.title,
+                 self.levels,
+                 self.contour_prefs))
 
     def prepare(self, data, model, stat):
         (self.x0, self.x1, self.y, self.xlabel,
@@ -882,39 +896,43 @@ class ModelContour(Contour):
 
 
 class PSFContour(DataContour):
+
     "Derived class for creating 2D PSF contours"
 
     def prepare(self, psf, data=None, stat=None):
         psfdata = psf.get_kernel(data, False)
         DataContour.prepare(self, psfdata)
-        self.title  = psf.kernel.name
+        self.title = psf.kernel.name
 
 
 class SourceContour(ModelContour):
+
     "Derived class for creating 2D model contours"
+
     def __init__(self):
         ModelContour.__init__(self)
         self.title = 'Source'
 
 
 class FitPlot(Plot):
+
     "Derived class for creating 1D combination data and model plots"
     plot_prefs = backend.get_fit_plot_defaults()
-    
+
     def __init__(self):
         self.dataplot = None
         self.modelplot = None
         Plot.__init__(self)
 
     def __str__(self):
-        data_title=None
+        data_title = None
         if self.dataplot is not None:
             data_title = self.dataplot.title
-        
-        model_title=None
+
+        model_title = None
         if self.modelplot is not None:
             model_title = self.modelplot.title
-        
+
         return (('dataplot   = %s'+'\n%s\n\n'+'modelplot  = %s'+'\n%s') %
                 (data_title,
                  self.dataplot,
@@ -933,6 +951,7 @@ class FitPlot(Plot):
 
 
 class FitContour(Contour):
+
     "Derived class for creating 2D combination data and model contours"
     contour_prefs = backend.get_fit_contour_defaults()
 
@@ -942,11 +961,11 @@ class FitContour(Contour):
         Contour.__init__(self)
 
     def __str__(self):
-        data_title=None
+        data_title = None
         if self.datacontour is not None:
             data_title = self.datacontour.title
-        
-        model_title=None
+
+        model_title = None
         if self.modelcontour is not None:
             model_title = self.modelcontour.title
         return (('datacontour = %s'+'\n%s\n\n'+'modelcontour = %s'+'\n%s') %
@@ -958,27 +977,28 @@ class FitContour(Contour):
     def prepare(self, datacontour, modelcontour):
         self.datacontour = datacontour
         self.modelcontour = modelcontour
-        
+
     def contour(self, overcontour=False, clearwindow=True):
-        self.datacontour.contour( overcontour, clearwindow)
+        self.datacontour.contour(overcontour, clearwindow)
         self.modelcontour.overcontour()
 
 
 class DelchiPlot(ModelPlot):
+
     "Derived class for creating 1D delchi chi plots ((data-model)/error)"
     plot_prefs = backend.get_resid_plot_defaults()
 
     def _calc_delchi(self, ylist, staterr):
         return (ylist[0] - ylist[1])/staterr
-    
+
     def prepare(self, data, model, stat):
         (self.x, y, staterr, self.xerr,
          self.xlabel, self.ylabel) = data.to_plot(model)
-        
+
         if staterr is None:
             if stat.name in _stats_noerr:
                 raise StatErr('badstat', "DelchiPlot", stat.name)
-            staterr = data.get_yerr(True,stat.calc_staterror)
+            staterr = data.get_yerr(True, stat.calc_staterror)
 
         self.y = self._calc_delchi(y, staterr)
         self.yerr = staterr/staterr
@@ -989,7 +1009,9 @@ class DelchiPlot(ModelPlot):
         Plot.plot(self, self.x, self.y, self.yerr, self.xerr, self.title,
                   self.xlabel, self.ylabel, overplot, clearwindow)
 
+
 class ChisqrPlot(ModelPlot):
+
     "Derived class for creating 1D chi**2 plots ((data-model)/error)**2"
     plot_prefs = backend.get_model_plot_defaults()
 
@@ -1000,10 +1022,10 @@ class ChisqrPlot(ModelPlot):
         (self.x, y, staterr, self.xerr,
          self.xlabel, self.ylabel) = data.to_plot(model)
 
-        #if staterr is None:
+        # if staterr is None:
         if stat.name in _stats_noerr:
             raise StatErr('badstat', "ChisqrPlot", stat.name)
-        staterr = data.get_yerr(True,stat.calc_staterror)
+        staterr = data.get_yerr(True, stat.calc_staterror)
 
         self.y = self._calc_chisqr(y, staterr)
         self.ylabel = '\chi^2'
@@ -1015,12 +1037,13 @@ class ChisqrPlot(ModelPlot):
 
 
 class ResidPlot(ModelPlot):
+
     "Derived class for creating 1D residual plots (data-model)"
     plot_prefs = backend.get_resid_plot_defaults()
 
     def _calc_resid(self, ylist):
         return ylist[0] - ylist[1]
-    
+
     def prepare(self, data, model, stat):
         (self.x, y, self.yerr, self.xerr,
          self.xlabel, self.ylabel) = data.to_plot(model)
@@ -1029,9 +1052,10 @@ class ResidPlot(ModelPlot):
 #        if self.yerr is None:
         if stat.name in _stats_noerr:
             self.yerr = data.get_yerr(True, Chi2XspecVar.calc_staterror)
-            warning("The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
+            warning(
+                "The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
         else:
-            self.yerr = data.get_yerr(True,stat.calc_staterror)
+            self.yerr = data.get_yerr(True, stat.calc_staterror)
 
         self.title = 'Residuals of %s - Model' % data.name
 
@@ -1039,8 +1063,9 @@ class ResidPlot(ModelPlot):
         Plot.plot(self, self.x, self.y, self.yerr, self.xerr, self.title,
                   self.xlabel, self.ylabel, overplot, clearwindow)
 
-    
+
 class ResidContour(ModelContour):
+
     "Derived class for creating 2D residual contours (data-model)"
     contour_prefs = backend.get_resid_contour_defaults()
 
@@ -1050,17 +1075,18 @@ class ResidContour(ModelContour):
     def prepare(self, data, model, stat):
         (self.x0, self.x1, self.y, self.xlabel,
          self.ylabel) = data.to_contour(yfunc=model)
-        
+
         self.y = self._calc_resid(self.y)
         self.title = 'Residuals of %s - Model' % data.name
 
     def contour(self, overcontour=False, clearwindow=True):
         Contour.contour(self, self.x0, self.x1, self.y, levels=self.levels,
                         title=self.title, xlabel=self.xlabel, ylabel=self.ylabel,
-                        overcontour=overcontour, clearwindow=clearwindow)    
+                        overcontour=overcontour, clearwindow=clearwindow)
 
 
 class RatioPlot(ModelPlot):
+
     "Derived class for creating 1D ratio plots (data:model)"
     plot_prefs = backend.get_ratio_plot_defaults()
 
@@ -1077,13 +1103,14 @@ class RatioPlot(ModelPlot):
          self.xlabel, self.ylabel) = data.to_plot(model)
 
         self.y = self._calc_ratio(y)
-        #if self.yerr is None:
+        # if self.yerr is None:
         if stat.name in _stats_noerr:
             self.yerr = data.get_yerr(True, Chi2XspecVar.calc_staterror)
             self.yerr = self.yerr/y[1]
-            warning("The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
+            warning(
+                "The displayed errorbars have been supplied with the data or calculated using chi2xspecvar; the errors are not used in fits with %s" % stat.name)
         else:
-            staterr = data.get_yerr(True,stat.calc_staterror)
+            staterr = data.get_yerr(True, stat.calc_staterror)
             self.yerr = staterr/y[1]
 
         self.ylabel = 'Data / Model'
@@ -1093,8 +1120,9 @@ class RatioPlot(ModelPlot):
         Plot.plot(self, self.x, self.y, self.yerr, self.xerr, self.title,
                   self.xlabel, self.ylabel, overplot, clearwindow)
 
-    
+
 class RatioContour(ModelContour):
+
     "Derived class for creating 2D ratio contours (data:model)"
     contour_prefs = backend.get_ratio_contour_defaults()
 
@@ -1118,7 +1146,6 @@ class RatioContour(ModelContour):
                         title=self.title, xlabel=self.xlabel,
                         ylabel=self.ylabel,
                         overcontour=overcontour, clearwindow=clearwindow)
-
 
 
 class Confidence1D(DataPlot):
@@ -1175,7 +1202,6 @@ class Confidence1D(DataPlot):
                  self.fac,
                  self.log))
 
-
     def prepare(self, min=None, max=None, nloop=20,
                 delv=None, fac=1, log=False, numcores=None):
         self.min = min
@@ -1185,7 +1211,6 @@ class Confidence1D(DataPlot):
         self.fac = fac
         self.log = log
         self.numcores = numcores
-
 
     def _interval_init(self, fit, par):
 
@@ -1218,9 +1243,9 @@ class Confidence1D(DataPlot):
             self.min = v - self.fac * dv
             self.max = v + self.fac * dv
 
-        if( not numpy.isscalar( self.min ) or
-            not numpy.isscalar( self.max ) ):
-            raise ConfidenceErr('badarg','Parameter limits', 'scalars')
+        if(not numpy.isscalar(self.min) or
+                not numpy.isscalar(self.max)):
+            raise ConfidenceErr('badarg', 'Parameter limits', 'scalars')
 
         # check user limits for errors
         if self.min >= self.max:
@@ -1235,10 +1260,10 @@ class Confidence1D(DataPlot):
             self.max = par.max
 
         if self.delv is None:
-            self.x = numpy.linspace(self.min,self.max,self.nloop)
+            self.x = numpy.linspace(self.min, self.max, self.nloop)
         else:
             eps = numpy.finfo(numpy.float32).eps
-            self.x = numpy.arange(self.min,self.max+self.delv-eps,self.delv)
+            self.x = numpy.arange(self.min, self.max+self.delv-eps, self.delv)
 
         x = self.x
         if self.log:
@@ -1248,10 +1273,9 @@ class Confidence1D(DataPlot):
             self.max = numpy.log10(self.max)
             self.min = numpy.log10(self.min)
 
-            x = numpy.linspace(self.min,self.max,len(x))
+            x = numpy.linspace(self.min, self.max, len(x))
 
         return x
-
 
     def calc(self, fit, par):
         if type(fit.stat) in (LeastSq,):
@@ -1259,7 +1283,7 @@ class Confidence1D(DataPlot):
 
     def plot(self, overplot=False, clearwindow=True):
         if self.log:
-            self.plot_prefs['xlog']=True
+            self.plot_prefs['xlog'] = True
 
         Plot.plot(self, self.x, self.y, title=self.title, xlabel=self.xlabel,
                   ylabel=self.ylabel, overplot=overplot,
@@ -1267,14 +1291,14 @@ class Confidence1D(DataPlot):
 
         if self.stat is not None:
             Plot.hline(self.stat, linecolor="green", linestyle="dash",
-                       linewidth=1.5,overplot=True, clearwindow=False)
+                       linewidth=1.5, overplot=True, clearwindow=False)
 
         if self.parval is not None:
             Plot.vline(self.parval, linecolor="orange", linestyle="dash",
-                       linewidth=1.5,overplot=True, clearwindow=False)
+                       linewidth=1.5, overplot=True, clearwindow=False)
 
         if self.log:
-            self.plot_prefs['xlog']=False
+            self.plot_prefs['xlog'] = False
 
 
 class Confidence2D(DataContour, Point):
@@ -1285,11 +1309,11 @@ class Confidence2D(DataContour, Point):
     def __init__(self):
         self.min = None
         self.max = None
-        self.nloop = (10,10)
+        self.nloop = (10, 10)
         self.fac = 4
         self.delv = None
-        self.log = (False,False)
-        self.sigma = (1,2,3)
+        self.log = (False, False)
+        self.sigma = (1, 2, 3)
         self.parval0 = None
         self.parval1 = None
         self.stat = None
@@ -1305,7 +1329,6 @@ class Confidence2D(DataContour, Point):
         if not state.has_key('numcores'):
             self.__dict__['numcores'] = None
 
-
     def __str__(self):
         x0 = self.x0
         if self.x0 is not None:
@@ -1319,7 +1342,7 @@ class Confidence2D(DataContour, Point):
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
 
-	return (('x0      = %s\n' +
+        return (('x0      = %s\n' +
                  'x1      = %s\n' +
                  'y       = %s\n' +
                  'min     = %s\n' +
@@ -1346,10 +1369,9 @@ class Confidence2D(DataContour, Point):
                  self.parval1,
                  self.levels))
 
-
-    def prepare(self, min=None, max=None, nloop=(10,10),
-                delv=None, fac=4, log=(False,False),
-                sigma=(1,2,3), levels=None, numcores=None):
+    def prepare(self, min=None, max=None, nloop=(10, 10),
+                delv=None, fac=4, log=(False, False),
+                sigma=(1, 2, 3), levels=None, numcores=None):
         self.min = min
         self.max = max
         self.nloop = nloop
@@ -1413,47 +1435,46 @@ class Confidence2D(DataContour, Point):
                     self.max[1] = par1.val + max1
 
             # check user limits for errors
-            if( numpy.isscalar( self.min ) or
-                numpy.isscalar( self.max ) ):
-                raise ConfidenceErr('badarg','Parameter limits', 'a list')
+            if(numpy.isscalar(self.min) or
+                    numpy.isscalar(self.max)):
+                raise ConfidenceErr('badarg', 'Parameter limits', 'a list')
 
-            for i in [0,1]:
+            for i in [0, 1]:
                 v = (self.max[i] + self.min[i]) / 2.
                 dv = numpy.fabs(v - self.min[i])
                 self.min[i] = v - self.fac * dv
                 self.max[i] = v + self.fac * dv
 
-        hmin = numpy.array([ par0.min, par1.min ])
-        hmax = numpy.array([ par0.max, par1.max ])
+        hmin = numpy.array([par0.min, par1.min])
+        hmax = numpy.array([par0.max, par1.max])
 
-        for i in [0,1]:
+        for i in [0, 1]:
             # check user limits for errors
-            if( numpy.isscalar( self.min ) or
-                numpy.isscalar( self.max ) ):
-                raise ConfidenceErr('badarg','Parameter limits', 'a list')
+            if(numpy.isscalar(self.min) or
+                    numpy.isscalar(self.max)):
+                raise ConfidenceErr('badarg', 'Parameter limits', 'a list')
 
             if self.min[i] >= self.max[i]:
                 raise ConfidenceErr('badlimits')
 
-            if numpy.isscalar( self.nloop ) or self.nloop[i] <= 1:
-                raise ConfidenceErr('badarg', 'Nloop parameter','a list with' +
-                                      ' elements > 1')
+            if numpy.isscalar(self.nloop) or self.nloop[i] <= 1:
+                raise ConfidenceErr('badarg', 'Nloop parameter', 'a list with' +
+                                    ' elements > 1')
 
             if self.min[i] < hmin[i]:
                 self.min[i] = hmin[i]
             if self.max[i] > hmax[i]:
                 self.max[i] = hmax[i]
 
-
         if self.delv is None:
-            self.x0 = numpy.linspace(self.min[0],self.max[0],self.nloop[0])
-            self.x1 = numpy.linspace(self.min[1],self.max[1],self.nloop[1])
+            self.x0 = numpy.linspace(self.min[0], self.max[0], self.nloop[0])
+            self.x1 = numpy.linspace(self.min[1], self.max[1], self.nloop[1])
 
         else:
             eps = numpy.finfo(numpy.float32).eps
-            self.x0 = numpy.arange(self.min[0],self.max[0]+self.delv[0]-eps,
+            self.x0 = numpy.arange(self.min[0], self.max[0]+self.delv[0]-eps,
                                    self.delv[0])
-            self.x1 = numpy.arange(self.min[1],self.max[1]+self.delv[1]-eps,
+            self.x1 = numpy.arange(self.min[1], self.max[1]+self.delv[1]-eps,
                                    self.delv[1])
 
         #x = numpy.array([self.x0, self.x1])
@@ -1463,30 +1484,28 @@ class Confidence2D(DataContour, Point):
         self.x0 = self.x0.ravel()
         self.x1 = self.x1.ravel()
 
-        for i in [0,1]:
+        for i in [0, 1]:
             if self.log[i]:
                 if self.max[i] <= 0.0 or self.min[i] <= 0.0:
                     raise ConfidenceErr('badarg', 'Log scale',
                                         'on positive boundaries')
                 self.max[i] = numpy.log10(self.max[i])
                 self.min[i] = numpy.log10(self.min[i])
-                x[i] = numpy.linspace(self.min[i],self.max[i],len(x[i]))
+                x[i] = numpy.linspace(self.min[i], self.max[i], len(x[i]))
 
         x0, x1 = numpy.meshgrid(x[0], x[1])
         return numpy.array([x0.ravel(), x1.ravel()]).T
-
 
     def calc(self, fit, par0, par1):
         if type(fit.stat) in (LeastSq,):
             raise ConfidenceErr('badargconf', fit.stat.name)
 
-
     def contour(self, overplot=False, clearwindow=True):
 
         if self.log[0]:
-            self.contour_prefs['xlog']=True
+            self.contour_prefs['xlog'] = True
         if self.log[1]:
-            self.contour_prefs['ylog']=True
+            self.contour_prefs['ylog'] = True
 
         Contour.contour(self, self.x0, self.x1, self.y, levels=self.levels,
                         title=self.title, xlabel=self.xlabel,
@@ -1496,9 +1515,9 @@ class Confidence2D(DataContour, Point):
                     overplot=True, clearwindow=False)
 
         if self.log[0]:
-            self.contour_prefs['xlog']=False
+            self.contour_prefs['xlog'] = False
         if self.log[1]:
-            self.contour_prefs['ylog']=False
+            self.contour_prefs['ylog'] = False
 
 
 class IntervalProjection(Confidence1D):
@@ -1507,12 +1526,10 @@ class IntervalProjection(Confidence1D):
         self.fast = True
         Confidence1D.__init__(self)
 
-
     def prepare(self, fast=True, min=None, max=None, nloop=20,
                 delv=None, fac=1, log=False, numcores=None):
         self.fast = fast
         Confidence1D.prepare(self, min, max, nloop, delv, fac, log, numcores)
-
 
     def calc(self, fit, par, methoddict=None):
         self.title = 'Interval-Projection'
@@ -1523,7 +1540,7 @@ class IntervalProjection(Confidence1D):
             raise ConfidenceErr('frozen', par.fullname, 'interval projection')
 
         thawed = [i for i in fit.model.pars if not i.frozen]
-    
+
         if par not in thawed:
             raise ConfidenceErr('thawed', par.fullname, fit.model.name)
 
@@ -1569,9 +1586,9 @@ class IntervalProjection(Confidence1D):
             # store the class methods for startup and teardown
             # these calls are unnecessary for every fit
             startup = fit.model.startup
-            fit.model.startup = lambda : None
+            fit.model.startup = lambda: None
             teardown = fit.model.teardown
-            fit.model.teardown = lambda : None
+            fit.model.teardown = lambda: None
 
             self.y = numpy.asarray(parallel_map(eval_proj, xvals,
                                                 self.numcores))
@@ -1596,9 +1613,9 @@ class IntervalUncertainty(Confidence1D):
         Confidence1D.calc(self, fit, par)
         if par.frozen:
             raise ConfidenceErr('frozen', par.fullname, 'interval uncertainty')
-        
+
         thawed = [i for i in fit.model.pars if not i.frozen]
-    
+
         if par not in thawed:
             raise ConfidenceErr('thawed', par.fullname, fit.model.name)
 
@@ -1607,7 +1624,7 @@ class IntervalUncertainty(Confidence1D):
         xvals = self._interval_init(fit, par)
 
         for i in thawed:
-            i.freeze()                    
+            i.freeze()
 
         def eval_uncert(val):
             if self.log:
@@ -1634,17 +1651,15 @@ class RegionProjection(Confidence2D):
         self.fast = True
         Confidence2D.__init__(self)
 
-
-    def prepare(self, fast=True, min=None, max=None, nloop=(10,10),
-                delv=None, fac=4, log=(False,False),
-                sigma=(1,2,3), levels=None, numcores=None):
+    def prepare(self, fast=True, min=None, max=None, nloop=(10, 10),
+                delv=None, fac=4, log=(False, False),
+                sigma=(1, 2, 3), levels=None, numcores=None):
         self.fast = fast
         Confidence2D.prepare(self, min, max, nloop, delv, fac, log,
                              sigma, levels, numcores)
 
-
     def calc(self, fit, par0, par1, methoddict=None):
-        self.title='Region-Projection'
+        self.title = 'Region-Projection'
 
         Confidence2D.calc(self, fit, par0, par1)
         if par0.frozen:
@@ -1653,7 +1668,7 @@ class RegionProjection(Confidence2D):
             raise ConfidenceErr('frozen', par1.fullname, 'region projection')
 
         thawed = [i for i in fit.model.pars if not i.frozen]
-        
+
         if par0 not in thawed:
             raise ConfidenceErr('thawed', par0.fullname, fit.model.name)
         if par1 not in thawed:
@@ -1682,9 +1697,8 @@ class RegionProjection(Confidence2D):
                     warning("Setting optimization to " + fit.method.name
                             + " for region projection plot")
 
-
         def eval_proj(pars):
-            for ii in [0,1]:
+            for ii in [0, 1]:
                 if self.log[ii]:
                     pars[ii] = numpy.power(10, pars[ii])
             (par0.val, par1.val) = pars
@@ -1697,13 +1711,13 @@ class RegionProjection(Confidence2D):
 
         try:
             fit.model.startup()
-            
+
             # store the class methods for startup and teardown
             # these calls are unnecessary for every fit
             startup = fit.model.startup
-            fit.model.startup = lambda : None
+            fit.model.startup = lambda: None
             teardown = fit.model.teardown
-            fit.model.teardown = lambda : None
+            fit.model.teardown = lambda: None
 
             grid = self._region_init(fit, par0, par1)
 
@@ -1729,23 +1743,23 @@ class RegionProjection(Confidence2D):
 class RegionUncertainty(Confidence2D):
 
     def calc(self, fit, par0, par1, methoddict=None):
-        self.title='Region-Uncertainty'
+        self.title = 'Region-Uncertainty'
 
         Confidence2D.calc(self, fit, par0, par1)
         if par0.frozen:
             raise ConfidenceErr('frozen', par0.fullname, 'region uncertainty')
         if par1.frozen:
             raise ConfidenceErr('frozen', par1.fullname, 'region uncertainty')
-        
+
         thawed = [i for i in fit.model.pars if not i.frozen]
-        
+
         if par0 not in thawed:
             raise ConfidenceErr('thawed', par0.fullname, fit.model.name)
         if par1 not in thawed:
             raise ConfidenceErr('thawed', par1.fullname, fit.model.name)
 
         def eval_uncert(pars):
-            for ii in [0,1]:
+            for ii in [0, 1]:
                 if self.log[ii]:
                     pars[ii] = numpy.power(10, pars[ii])
             (par0.val, par1.val) = pars

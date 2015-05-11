@@ -29,13 +29,15 @@ import traceback
 import warnings
 
 __all__ = ['set_package_path', 'set_local_path', 'restore_path',
-           'IgnoreException', 'NumpyTestCase', 'NumpyTest', 'importall',]
+           'IgnoreException', 'NumpyTestCase', 'NumpyTest', 'importall', ]
 
-DEBUG=0
+DEBUG = 0
 from numpy.testing.utils import jiffies
 get_frame = sys._getframe
 
+
 class IgnoreException(Exception):
+
     "Ignoring this exception due to disabled feature"
 
 
@@ -57,22 +59,22 @@ def set_package_path(level=1):
 
       restore_path()
     """
-    #warnings.warn("set_package_path will be removed in NumPy 1.3; please "
+    # warnings.warn("set_package_path will be removed in NumPy 1.3; please "
     #              "update your code", DeprecationWarning, stacklevel=2)
 
     from distutils.util import get_platform
     f = get_frame(level)
-    if f.f_locals['__name__']=='__main__':
+    if f.f_locals['__name__'] == '__main__':
         testfile = sys.argv[0]
     else:
         testfile = f.f_locals['__file__']
     d = os.path.dirname(os.path.dirname(os.path.abspath(testfile)))
-    d1 = os.path.join(d,'build','lib.%s-%s'%(get_platform(),sys.version[:3]))
+    d1 = os.path.join(d, 'build', 'lib.%s-%s' % (get_platform(), sys.version[:3]))
     if not os.path.isdir(d1):
         d1 = os.path.dirname(d)
     if DEBUG:
         print 'Inserting %r to sys.path for test_file %r' % (d1, testfile)
-    sys.path.insert(0,d1)
+    sys.path.insert(0, d1)
     return
 
 
@@ -83,22 +85,23 @@ def set_local_path(reldir='', level=1):
 
       restore_path()
     """
-    #warnings.warn("set_local_path will be removed in NumPy 1.3; please "
+    # warnings.warn("set_local_path will be removed in NumPy 1.3; please "
     #              "update your code", DeprecationWarning, stacklevel=2)
 
     f = get_frame(level)
-    if f.f_locals['__name__']=='__main__':
+    if f.f_locals['__name__'] == '__main__':
         testfile = sys.argv[0]
     else:
         testfile = f.f_locals['__file__']
-    local_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(testfile)),reldir))
+    local_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(testfile)), reldir))
     if DEBUG:
         print 'Inserting %r to sys.path' % (local_path)
-    sys.path.insert(0,local_path)
+    sys.path.insert(0, local_path)
     return
 
+
 def restore_path():
-    #warnings.warn("restore_path will be removed in NumPy 1.3; please "
+    # warnings.warn("restore_path will be removed in NumPy 1.3; please "
     #              "update your code", DeprecationWarning, stacklevel=2)
 
     if DEBUG:
@@ -107,56 +110,61 @@ def restore_path():
     return
 
 
-def output_exception(printstream = sys.stdout):
+def output_exception(printstream=sys.stdout):
     try:
         type, value, tb = sys.exc_info()
         info = traceback.extract_tb(tb)
-        #this is more verbose
-        #traceback.print_exc()
-        filename, lineno, function, text = info[-1] # last line only
+        # this is more verbose
+        # traceback.print_exc()
+        filename, lineno, function, text = info[-1]  # last line only
         print>>printstream, "%s:%d: %s: %s (in %s)" %\
                             (filename, lineno, type.__name__, str(value), function)
     finally:
-        type = value = tb = None # clean up
+        type = value = tb = None  # clean up
     return
 
 
 class _dummy_stream:
-    def __init__(self,stream):
+
+    def __init__(self, stream):
         self.data = []
         self.stream = stream
-    def write(self,message):
+
+    def write(self, message):
         if not self.data and not message.startswith('E'):
             self.stream.write(message)
             self.stream.flush()
             message = ''
         self.data.append(message)
-    def writeln(self,message):
+
+    def writeln(self, message):
         self.write(message+'\n')
+
     def flush(self):
         self.stream.flush()
 
 
 class NumpyTestCase (unittest.TestCase):
+
     def __init__(self, *args, **kwds):
-        #warnings.warn("NumpyTestCase will be removed in the next release; please update your code to use nose or unittest",
+        # warnings.warn("NumpyTestCase will be removed in the next release; please update your code to use nose or unittest",
         #                 DeprecationWarning, stacklevel=2)
         unittest.TestCase.__init__(self, *args, **kwds)
 
-    def measure(self,code_str,times=1):
+    def measure(self, code_str, times=1):
         """ Return elapsed time for executing code_str in the
         namespace of the caller for given times.
         """
         frame = get_frame(1)
-        locs,globs = frame.f_locals,frame.f_globals
+        locs, globs = frame.f_locals, frame.f_globals
         code = compile(code_str,
                        'NumpyTestCase runner for '+self.__class__.__name__,
                        'exec')
         i = 0
         elapsed = jiffies()
-        while i<times:
+        while i < times:
             i += 1
-            exec code in globs,locs
+            exec code in globs, locs
         elapsed = jiffies() - elapsed
         return 0.01*elapsed
 
@@ -180,13 +188,13 @@ class NumpyTestCase (unittest.TestCase):
                 errstr = str(errstr).split('\n')[-2]
             l = len(result.stream.data)
             if errstr.startswith('IgnoreException:'):
-                if l==1:
-                    assert result.stream.data[-1]=='E', \
-                            repr(result.stream.data)
+                if l == 1:
+                    assert result.stream.data[-1] == 'E', \
+                        repr(result.stream.data)
                     result.stream.data[-1] = 'i'
                 else:
-                    assert result.stream.data[-1]=='ERROR\n', \
-                            repr(result.stream.data)
+                    assert result.stream.data[-1] == 'ERROR\n', \
+                        repr(result.stream.data)
                     result.stream.data[-1] = 'ignoring\n'
                 del result.errors[-1]
         map(save_stream.write, result.stream.data)
@@ -195,8 +203,9 @@ class NumpyTestCase (unittest.TestCase):
 
     def warn(self, message):
         from numpy.distutils.misc_util import yellow_text
-        print>>sys.stderr,yellow_text('Warning: %s' % (message))
+        print>>sys.stderr, yellow_text('Warning: %s' % (message))
         sys.stderr.flush()
+
     def info(self, message):
         print>>sys.stdout, message
         sys.stdout.flush()
@@ -215,7 +224,7 @@ class NumpyTestCase (unittest.TestCase):
             m = imp.load_module(name, file, pathname, description)
         finally:
             file.close()
-        if sys.version[:3]<'2.4':
+        if sys.version[:3] < '2.4':
             doctest.testmod(m, verbose=False)
         else:
             tests = doctest.DocTestFinder().find(m)
@@ -227,7 +236,7 @@ class NumpyTestCase (unittest.TestCase):
 
 def _get_all_method_names(cls):
     names = dir(cls)
-    if sys.version[:3]<='2.1':
+    if sys.version[:3] <= '2.1':
         for b in cls.__bases__:
             for n in dir(b)+_get_all_method_names(b):
                 if n not in names:
@@ -237,6 +246,7 @@ def _get_all_method_names(cls):
 
 # for debug build--check for memory leaks during the test.
 class _NumPyTextTestResult(unittest._TextTestResult):
+
     def startTest(self, test):
         unittest._TextTestResult.startTest(self, test)
         if self.showAll:
@@ -250,15 +260,18 @@ class _NumPyTextTestResult(unittest._TextTestResult):
             N = len(sys.getobjects(0))
             self.stream.write("objects: %d ===> %d;   " % (self._totnumobj, N))
             self.stream.write("refcnts: %d ===> %d\n" % (self._totrefcnt,
-                              sys.gettotalrefcount()))
+                                                         sys.gettotalrefcount()))
         return
 
+
 class NumPyTextTestRunner(unittest.TextTestRunner):
+
     def _makeResult(self):
         return _NumPyTextTestResult(self.stream, self.descriptions, self.verbosity)
 
 
 class NumpyTest:
+
     """ Numpy tests site manager.
 
     Usage: NumpyTest(<package>).test(level=1,verbosity=1)
@@ -283,39 +296,41 @@ class NumpyTest:
     Old-style test_suite(level=1) hooks are also supported.
     """
     _check_testcase_name = re.compile(r'test.*|Test.*').match
+
     def check_testcase_name(self, name):
         """ Return True if name matches TestCase class.
         """
         return not not self._check_testcase_name(name)
 
     testfile_patterns = ['test_%(modulename)s.py']
-    def get_testfile(self, module, verbosity = 0):
+
+    def get_testfile(self, module, verbosity=0):
         """ Return path to module test file.
         """
         mstr = self._module_str
         short_module_name = self._get_short_module_name(module)
         d = os.path.split(module.__file__)[0]
-        test_dir = os.path.join(d,'tests')
-        local_test_dir = os.path.join(os.getcwd(),'tests')
+        test_dir = os.path.join(d, 'tests')
+        local_test_dir = os.path.join(os.getcwd(), 'tests')
         if os.path.basename(os.path.dirname(local_test_dir)) \
-               == os.path.basename(os.path.dirname(test_dir)):
+                == os.path.basename(os.path.dirname(test_dir)):
             test_dir = local_test_dir
         for pat in self.testfile_patterns:
-            fn = os.path.join(test_dir, pat % {'modulename':short_module_name})
+            fn = os.path.join(test_dir, pat % {'modulename': short_module_name})
             if os.path.isfile(fn):
                 return fn
-        if verbosity>1:
-            self.warn('No test file found in %s for module %s' \
+        if verbosity > 1:
+            self.warn('No test file found in %s for module %s'
                       % (test_dir, mstr(module)))
         return
 
     def __init__(self, package=None):
-        #warnings.warn("NumpyTest will be removed in the next release; please update your code to use nose or unittest",
+        # warnings.warn("NumpyTest will be removed in the next release; please update your code to use nose or unittest",
         #                 DeprecationWarning, stacklevel=2)
         if package is None:
             from numpy.distutils.misc_util import get_frame
             f = get_frame(1)
-            package = f.f_locals.get('__name__',f.f_globals.get('__name__',None))
+            package = f.f_locals.get('__name__', f.f_globals.get('__name__', None))
             assert package is not None
         self.package = package
         self._rename_map = {}
@@ -330,20 +345,20 @@ class NumpyTest:
         If 'newname' is None, then no tests will be executed for a given
         module.
         """
-        for k,v in kws.items():
+        for k, v in kws.items():
             self._rename_map[k] = v
         return
 
     def _module_str(self, module):
         filename = module.__file__[-30:]
-        if filename!=module.__file__:
+        if filename != module.__file__:
             filename = '...'+filename
         return '<module %r from %r>' % (module.__name__, filename)
 
-    def _get_method_names(self,clsobj,level):
+    def _get_method_names(self, clsobj, level):
         names = []
         for mthname in _get_all_method_names(clsobj):
-            if mthname[:5] not in ['bench','check'] \
+            if mthname[:5] not in ['bench', 'check'] \
                and mthname[:4] not in ['test']:
                 continue
             mth = getattr(clsobj, mthname)
@@ -354,21 +369,21 @@ class NumpyTest:
                 mthlevel = d[0]
             else:
                 mthlevel = 1
-            if level>=mthlevel:
+            if level >= mthlevel:
                 if mthname not in names:
                     names.append(mthname)
             for base in clsobj.__bases__:
-                for n in self._get_method_names(base,level):
+                for n in self._get_method_names(base, level):
                     if n not in names:
                         names.append(n)
         return names
 
     def _get_short_module_name(self, module):
-        d,f = os.path.split(module.__file__)
+        d, f = os.path.split(module.__file__)
         short_module_name = os.path.splitext(os.path.basename(f))[0]
-        if short_module_name=='__init__':
+        if short_module_name == '__init__':
             short_module_name = module.__name__.split('.')[-1]
-        short_module_name = self._rename_map.get(short_module_name,short_module_name)
+        short_module_name = self._rename_map.get(short_module_name, short_module_name)
         return short_module_name
 
     def _get_module_tests(self, module, level, verbosity):
@@ -384,17 +399,17 @@ class NumpyTest:
             return []
 
         if not os.path.isfile(test_file):
-            if short_module_name[:5]=='info_' \
-               and short_module_name[5:]==module.__name__.split('.')[-2]:
+            if short_module_name[:5] == 'info_' \
+               and short_module_name[5:] == module.__name__.split('.')[-2]:
                 return []
-            if short_module_name in ['__cvs_version__','__svn_version__']:
+            if short_module_name in ['__cvs_version__', '__svn_version__']:
                 return []
-            if short_module_name[-8:]=='_version' \
-               and short_module_name[:-8]==module.__name__.split('.')[-2]:
+            if short_module_name[-8:] == '_version' \
+               and short_module_name[:-8] == module.__name__.split('.')[-2]:
                 return []
-            if verbosity>1:
+            if verbosity > 1:
                 self.warn(test_file)
-                self.warn('   !! No test file %r found for %s' \
+                self.warn('   !! No test file %r found for %s'
                           % (os.path.basename(test_file), mstr(module)))
             return []
 
@@ -402,7 +417,7 @@ class NumpyTest:
             return []
 
         parent_module_name = '.'.join(module.__name__.split('.')[:-1])
-        test_module_name,ext = os.path.splitext(os.path.basename(test_file))
+        test_module_name, ext = os.path.splitext(os.path.basename(test_file))
         test_dir_module = parent_module_name+'.tests'
         test_module_name = test_dir_module+'.'+test_module_name
 
@@ -411,7 +426,7 @@ class NumpyTest:
 
         old_sys_path = sys.path[:]
         try:
-            f = open(test_file,'r')
+            f = open(test_file, 'r')
             test_module = imp.load_module(test_module_name, f,
                                           test_file, ('.py', 'r', 1))
             f.close()
@@ -437,15 +452,15 @@ class NumpyTest:
                or not issubclass(obj, unittest.TestCase) \
                or not self.check_testcase_name(obj.__name__):
                 continue
-            for mthname in self._get_method_names(obj,level):
+            for mthname in self._get_method_names(obj, level):
                 suite = obj(mthname)
-                if getattr(suite,'isrunnable',lambda mthname:1)(mthname):
+                if getattr(suite, 'isrunnable', lambda mthname: 1)(mthname):
                     suite_list.append(suite)
-        matched_suite_list = [suite for suite in suite_list \
-                              if self.testcase_match(suite.id()\
-                                                     .replace('__main__.',''))]
-        if verbosity>=0:
-            self.info('  Found %s/%s tests for %s' \
+        matched_suite_list = [suite for suite in suite_list
+                              if self.testcase_match(suite.id()
+                                                     .replace('__main__.', ''))]
+        if verbosity >= 0:
+            self.info('  Found %s/%s tests for %s'
                       % (len(matched_suite_list), len(suite_list), module_name))
         return matched_suite_list
 
@@ -455,9 +470,9 @@ class NumpyTest:
         for name, module in sys.modules.items():
             if not name.startswith(package_name) or module is None:
                 continue
-            if not hasattr(module,'__file__'):
+            if not hasattr(module, '__file__'):
                 continue
-            if os.path.basename(os.path.dirname(module.__file__))=='tests':
+            if os.path.basename(os.path.dirname(module.__file__)) == 'tests':
                 continue
             modules.append((name, module))
 
@@ -485,7 +500,7 @@ class NumpyTest:
             if not hasattr(module, '__file__'):
                 continue
             d = os.path.dirname(module.__file__)
-            if os.path.basename(d)=='tests':
+            if os.path.basename(d) == 'tests':
                 continue
             d = os.path.join(d, 'tests')
             if not os.path.isdir(d):
@@ -536,7 +551,7 @@ class NumpyTest:
                         test_module = imp.load_module(n, fo, f,
                                                       ('.py', 'U', 1))
                     except Exception, msg:
-                        print 'Failed importing %s: %s' % (f,msg)
+                        print 'Failed importing %s: %s' % (f, msg)
                         continue
                 finally:
                     if fo:
@@ -584,7 +599,7 @@ class NumpyTest:
         (with names having prefixes 'check_' or 'bench_'); each of these
         methods are called when running unit tests.
         """
-        if level is None: # Do nothing.
+        if level is None:  # Do nothing.
             return
 
         if isinstance(self.package, str):
@@ -619,7 +634,7 @@ class NumpyTest:
         sys.argv[1:] = old_sys_argv
         return r
 
-    def testall(self, level=1,verbosity=1):
+    def testall(self, level=1, verbosity=1):
         """ Run Numpy module test suite with level and verbosity.
 
         level:
@@ -678,23 +693,25 @@ class NumpyTest:
                           default=r'.*',
                           type='string')
         (options, args) = parser.parse_args()
-        return self.test(options.level,options.verbosity,
+        return self.test(options.level, options.verbosity,
                          sys_argv=shlex.split(options.sys_argv or ''),
                          testcase_pattern=options.testcase_pattern)
 
     def warn(self, message):
         from numpy.distutils.misc_util import yellow_text
-        print>>sys.stderr,yellow_text('Warning: %s' % (message))
+        print>>sys.stderr, yellow_text('Warning: %s' % (message))
         sys.stderr.flush()
+
     def info(self, message):
         print>>sys.stdout, message
         sys.stdout.flush()
+
 
 def importall(package):
     """
     Try recursively to import all subpackages under package.
     """
-    if isinstance(package,str):
+    if isinstance(package, str):
         package = __import__(package)
 
     package_name = package.__name__
@@ -703,13 +720,13 @@ def importall(package):
         subdir = os.path.join(package_dir, subpackage_name)
         if not os.path.isdir(subdir):
             continue
-        if not os.path.isfile(os.path.join(subdir,'__init__.py')):
+        if not os.path.isfile(os.path.join(subdir, '__init__.py')):
             continue
         name = package_name+'.'+subpackage_name
         try:
             exec 'import %s as m' % (name)
         except Exception, msg:
-            print 'Failed importing %s: %s' %(name, msg)
+            print 'Failed importing %s: %s' % (name, msg)
             continue
         importall(m)
     return

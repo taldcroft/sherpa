@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -33,7 +33,7 @@ warning = logging.getLogger("sherpa").warning
 
 __all__ = ['multivariate_t', 'multivariate_cauchy',
            'normal_sample', 'uniform_sample', 't_sample',
-           'ParameterScaleVector','ParameterScaleMatrix',
+           'ParameterScaleVector', 'ParameterScaleMatrix',
            'UniformParameterSampleFromScaleVector',
            'NormalParameterSampleFromScaleVector',
            'NormalParameterSampleFromScaleMatrix',
@@ -41,6 +41,7 @@ __all__ = ['multivariate_t', 'multivariate_cauchy',
            'NormalSampleFromScaleMatrix', 'NormalSampleFromScaleVector',
            'UniformSampleFromScaleVector', 'StudentTSampleFromScaleMatrix',
            ]
+
 
 def multivariate_t(mean, cov, df, size=None):
     """
@@ -84,7 +85,7 @@ def multivariate_t(mean, cov, df, size=None):
     normal = numpy.random.multivariate_normal(numpy.zeros_like(mean), cov, size)
     #x = numpy.sqrt(numpy.random.chisquare(df)/df)
     #numpy.divide(normal, x, normal)
-    x = numpy.sqrt(numpy.random.chisquare(df,size)/df)
+    x = numpy.sqrt(numpy.random.chisquare(df, size)/df)
     numpy.divide(normal, x[numpy.newaxis].T, normal)
     numpy.add(mean, normal, normal)
     x = normal
@@ -96,7 +97,6 @@ def multivariate_cauchy(mean, cov, size=None):
     This needs to be checked too! A reference to the literature the better
     """
     return multivariate_t(mean, cov, 1, size=None)
-
 
 
 class ParameterScale(NoNewAttributesAfterInit):
@@ -139,7 +139,7 @@ class ParameterScaleVector(ParameterScale):
                     conf.config['sigma'] = self.sigma
                     fit.estmethod = conf
                     try:
-                        t = fit.est_errors(parlist = (par,))
+                        t = fit.est_errors(parlist=(par,))
                         if t.parmins[0] is not None and t.parmaxes[0] is not None:
                             scale = numpy.abs(t.parmins[0])
 
@@ -163,21 +163,20 @@ class ParameterScaleVector(ParameterScale):
                 scales.append(scale)
 
         else:
-            if not numpy.iterable( myscales ):
-                raise TypeError( "scales option must be iterable of length %d " % len( thawedpars ) )
-            scales = map( abs, myscales )
+            if not numpy.iterable(myscales):
+                raise TypeError("scales option must be iterable of length %d " % len(thawedpars))
+            scales = map(abs, myscales)
         scales = numpy.asarray(scales).transpose()
         return scales
 
 
 class ParameterScaleMatrix(ParameterScale):
 
-
     def get_scales(self, fit, myscales=None):
 
-        def get_size_of_covar( pars ):
+        def get_size_of_covar(pars):
             thawedpars = [par for par in pars if not par.frozen]
-            npar = len( thawedpars )
+            npar = len(thawedpars)
             msg = 'scales must be a numpy array of size (%d,%d)' % (npar, npar)
             return npar, msg
 
@@ -193,15 +192,15 @@ class ParameterScaleMatrix(ParameterScale):
             cov = r.extra_output
 
         else:
-            if isinstance( myscales, (numpy.ndarray) ):
-                npar, msg = get_size_of_covar( fit.model.pars )
-                if ( npar, npar ) == myscales.shape:
+            if isinstance(myscales, (numpy.ndarray)):
+                npar, msg = get_size_of_covar(fit.model.pars)
+                if (npar, npar) == myscales.shape:
                     cov = myscales
                 else:
-                    raise EstErr( msg )
+                    raise EstErr(msg)
             else:
-                npar, msg = get_size_of_covar( fit.model.pars )
-                raise EstErr( msg )
+                npar, msg = get_size_of_covar(fit.model.pars)
+                raise EstErr(msg)
             cov = myscales
 
         if cov is None:
@@ -224,11 +223,9 @@ class ParameterSampleFromScaleVector(NoNewAttributesAfterInit):
     def __init__(self):
         self.scale = ParameterScaleVector()
         NoNewAttributesAfterInit.__init__(self)
-    
 
     def get_sample(self):
         raise NotImplementedError
-
 
 
 class ParameterSampleFromScaleMatrix(NoNewAttributesAfterInit):
@@ -236,7 +233,6 @@ class ParameterSampleFromScaleMatrix(NoNewAttributesAfterInit):
     def __init__(self):
         self.scale = ParameterScaleMatrix()
         NoNewAttributesAfterInit.__init__(self)
-    
 
     def get_sample(self):
         raise NotImplementedError
@@ -266,7 +262,7 @@ class NormalParameterSampleFromScaleMatrix(ParameterSampleFromScaleMatrix):
 
     def get_sample(self, fit, mycov=None, num=1):
         vals = numpy.array(fit.model.thawedpars)
-        cov = self.scale.get_scales(fit,mycov)
+        cov = self.scale.get_scales(fit, mycov)
         return numpy.random.multivariate_normal(vals, cov, int(num))
 
 
@@ -281,7 +277,7 @@ class StudentTParameterSampleFromScaleMatrix(ParameterSampleFromScaleMatrix):
 def _sample_stat(fit, samples, numcores=None):
 
     oldvals = fit.model.thawedpars
- 
+
     def evaluate(sample):
         fit.model.thawedpars = sample
         return fit.calc_stat()
@@ -294,7 +290,7 @@ def _sample_stat(fit, samples, numcores=None):
         fit.model.teardown()
         fit.model.thawedpars = oldvals
 
-    return numpy.concatenate([stats[:,numpy.newaxis], samples], axis=1)
+    return numpy.concatenate([stats[:, numpy.newaxis], samples], axis=1)
 
 
 class NormalSampleFromScaleMatrix(NormalParameterSampleFromScaleMatrix):

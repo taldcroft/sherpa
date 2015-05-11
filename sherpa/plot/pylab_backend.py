@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2010  Smithsonian Astrophysical Observatory
 #
 #
@@ -25,32 +25,37 @@ from sherpa.utils import get_keyword_defaults
 from sherpa.utils.err import NotImplementedErr
 
 
-__all__ = ('clear_window','point','plot','histo','contour','set_subplot','init',
+__all__ = ('clear_window', 'point', 'plot', 'histo', 'contour', 'set_subplot', 'init',
            'get_split_plot_defaults', 'get_plot_defaults', 'begin', 'end',
            'get_data_plot_defaults', 'get_model_plot_defaults', 'exceptions',
            'get_fit_plot_defaults', 'get_resid_plot_defaults',
            'get_ratio_plot_defaults', 'get_contour_defaults',
            'get_data_contour_defaults', 'get_model_contour_defaults',
            'get_fit_contour_defaults', 'get_resid_contour_defaults',
-           'get_ratio_contour_defaults','get_confid_plot_defaults',
+           'get_ratio_contour_defaults', 'get_confid_plot_defaults',
            'get_confid_contour_defaults', 'set_window_redraw', 'set_jointplot',
            'get_model_histo_defaults', 'get_histo_defaults',
-           'get_component_plot_defaults','get_component_histo_defaults', 
+           'get_component_plot_defaults', 'get_component_histo_defaults',
            'vline', 'hline', 'get_scatter_plot_defaults', 'get_cdf_plot_defaults')
+
 
 def init():
     pass
 
+
 def begin():
     pass
+
 
 def end():
     set_window_redraw(True)
     if pylab.isinteractive():
         pylab.draw()
 
+
 def exceptions():
     pass
+
 
 def _choose(test, iftrue, iffalse=None):
     if test:
@@ -63,6 +68,7 @@ _errorbar_defaults = get_keyword_defaults(pylab.Axes.errorbar)
 
 def clear_window():
     pylab.clf()
+
 
 def set_window_redraw(redraw):
     if redraw:
@@ -79,15 +85,15 @@ def point(x, y, overplot=True, clearwindow=False,
         if clearwindow:
             clear_window()
         axes = pylab.gca()
-        
-    if color is None:
-        str = '%s'%(symbol)
-    else:
-        str = '%s%s'%(color,symbol)
 
-    point = axes.plot(numpy.array([x]),numpy.array([y]),str)[0]
-    
-    #pylab.draw()
+    if color is None:
+        str = '%s' % (symbol)
+    else:
+        str = '%s%s' % (color, symbol)
+
+    point = axes.plot(numpy.array([x]), numpy.array([y]), str)[0]
+
+    # pylab.draw()
 
 
 def histo(xlo, xhi, y, yerr=None, title=None, xlabel=None, ylabel=None,
@@ -111,25 +117,26 @@ def histo(xlo, xhi, y, yerr=None, title=None, xlabel=None, ylabel=None,
 
 
 _attr_map = {
-    'linecolor' : 'color',
-    'linestyle' : 'linestyle',
-    'linewidth' : 'linewidth',
-    }
+    'linecolor': 'color',
+    'linestyle': 'linestyle',
+    'linewidth': 'linewidth',
+}
 
 _linestyle_map = {
 
-    'noline'  : ' ',
-    'solid'   : '-',
-    'dot'     : ':',
-    'dash'    : '--', 
-    'dotdash' : '-.',
-    }
+    'noline': ' ',
+    'solid': '-',
+    'dot': ':',
+    'dash': '--',
+    'dotdash': '-.',
+}
 
 
 def _check_hex_color(val):
     if type(val) in (str, numpy.string_) and val.startswith('0x'):
-        val = '#'+str(val).replace('0x','').rjust(6,'0')
+        val = '#'+str(val).replace('0x', '').rjust(6, '0')
     return val
+
 
 def vline(x, ymin=0, ymax=1,
           linecolor=None,
@@ -244,19 +251,20 @@ def plot(x, y, yerr=None, xerr=None, title=None, xlabel=None, ylabel=None,
 
     if xaxis:
         axes.axhspan(ymin=0, ymax=0, xmin=0, xmax=1)
-        
+
     if ratioline:
         axes.axhspan(ymin=1, ymax=1, xmin=0, xmax=1)
 
-    #pylab.draw()
-   
+    # pylab.draw()
+
+
 def contour(x0, x1, y, levels=None, title=None, xlabel=None, ylabel=None,
             overcontour=False, clearwindow=True,
             xlog=False,
             ylog=False,
             linewidths=None,
             colors=None):
-    
+
     if overcontour:
         axes = pylab.gca()
     else:
@@ -276,10 +284,9 @@ def contour(x0, x1, y, levels=None, title=None, xlabel=None, ylabel=None,
         axes.set_xscale(xscale)
         axes.set_yscale(yscale)
 
-
     x0 = numpy.unique(x0)
     x1 = numpy.unique(x1)
-    y  = numpy.asarray(y)
+    y = numpy.asarray(y)
 
     if x0.size * x1.size != y.size:
         raise NotImplementedErr('contourgrids')
@@ -292,7 +299,7 @@ def contour(x0, x1, y, levels=None, title=None, xlabel=None, ylabel=None,
         line = axes.contour(x0, x1, y, levels, colors=colors,
                             linewidths=linewidths)
 
-    #pylab.draw()
+    # pylab.draw()
 
 
 def set_subplot(row, col, nrows, ncols, clearaxes=True,
@@ -312,8 +319,8 @@ def set_subplot(row, col, nrows, ncols, clearaxes=True,
     # in matplotlib
     nrows = int(nrows)
     ncols = int(ncols)
-    num   = int(num)
-    
+    num = int(num)
+
     pylab.subplot(nrows, ncols, num)
 
     if clearaxes:
@@ -333,18 +340,18 @@ def set_jointplot(row, col, nrows, ncols, clearaxes=True,
         pylab.sca(axarr[0])
 
     else:
-        
+
         # need to set axes[1] as current axes.
         axes = pylab.gca()
         ax2 = axes.figure.axes[-1]
         pylab.sca(ax2)
-        #ax2.get_yticklabels()[-1].set_visible(False)
+        # ax2.get_yticklabels()[-1].set_visible(False)
 
 
 def get_split_plot_defaults():
     return get_keyword_defaults(set_subplot, 1)
 
-    
+
 def get_plot_defaults():
     return get_keyword_defaults(plot, 7)
 
@@ -352,12 +359,14 @@ def get_plot_defaults():
 def get_point_defaults():
     return get_keyword_defaults(point, 2)
 
+
 def get_histo_defaults():
     return get_keyword_defaults(histo, 6)
 
+
 def get_confid_point_defaults():
     d = get_point_defaults()
-    d['symbol']='+'
+    d['symbol'] = '+'
     return d
 
 
@@ -369,9 +378,11 @@ def get_data_plot_defaults():
     d['marker'] = '.'
     return d
 
+
 def get_model_histo_defaults():
     d = get_histo_defaults()
     return d
+
 
 def get_model_plot_defaults():
     d = get_plot_defaults()
@@ -430,10 +441,12 @@ get_ratio_contour_defaults = get_data_contour_defaults
 get_component_plot_defaults = get_model_plot_defaults
 get_component_histo_defaults = get_model_histo_defaults
 
+
 def get_cdf_plot_defaults():
     d = get_model_plot_defaults()
     d['linecolor'] = 'red'
     return d
+
 
 def get_scatter_plot_defaults():
     d = get_data_plot_defaults()

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -28,7 +28,7 @@ class BackgroundSumModel(CompositeModel, ArithmeticModel):
     def __init__(self, srcdata, bkgmodels):
         self.srcdata = srcdata
         self.bkgmodels = bkgmodels
-        scale_factor = self.srcdata.sum_background_data(lambda key, bkg:1)
+        scale_factor = self.srcdata.sum_background_data(lambda key, bkg: 1)
         bkgnames = [model.name for model in bkgmodels.values()]
         name = '%g * (' % scale_factor + ' + '.join(bkgnames) + ')'
         CompositeModel.__init__(self, name, self.bkgmodels.values())
@@ -43,4 +43,4 @@ class BackgroundSumModel(CompositeModel, ArithmeticModel):
             # of p)
             return bmodel(*args, **kwargs)
 
-        return self.srcdata.sum_background_data(eval_bkg_model)            
+        return self.srcdata.sum_background_data(eval_bkg_model)

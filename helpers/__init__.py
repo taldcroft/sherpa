@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -26,10 +26,10 @@ from sherpa_config import sherpa_config
 from xspec_config import xspec_config
 
 commands = {
-             'build': build,
-             'clean' : clean,
-             'install' : install,
-             'sdist' : sdist,
-             'sherpa_config' : sherpa_config,
-             'xspec_config' : xspec_config,
-            }
+    'build': build,
+    'clean': clean,
+    'install': install,
+    'sdist': sdist,
+    'sherpa_config': sherpa_config,
+    'xspec_config': xspec_config,
+}

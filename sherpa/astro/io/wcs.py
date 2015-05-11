@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2008  Smithsonian Astrophysical Observatory
 #
 #
@@ -21,6 +21,7 @@ import numpy
 from sherpa.utils import NoNewAttributesAfterInit
 from sherpa.astro.utils._wcs import pix2world, world2pix
 
+
 class WCS(NoNewAttributesAfterInit):
 
     def __init__(self, name, type, crval, crpix, cdelt,
@@ -41,8 +42,10 @@ class WCS(NoNewAttributesAfterInit):
 
     def __str__(self):
         val = [self.name,
-               ' crval    = %s' % numpy.array2string(self.crval, separator=',', precision=4, suppress_small=False),
-               ' crpix    = %s' % numpy.array2string(self.crpix, separator=',', precision=4, suppress_small=False),
+               ' crval    = %s' % numpy.array2string(
+                   self.crval, separator=',', precision=4, suppress_small=False),
+               ' crpix    = %s' % numpy.array2string(
+                   self.crpix, separator=',', precision=4, suppress_small=False),
                ' cdelt    = %s' % numpy.array2string(self.cdelt, separator=',', precision=4, suppress_small=False)]
 
         if self.type == 'WCS':
@@ -60,6 +63,6 @@ class WCS(NoNewAttributesAfterInit):
 
     def invert(self, x0, x1):
         x0, x1 = world2pix(self.type, x0, x1,
-                        self.crpix, self.crval, self.cdelt,
-                        self.crota, self.equinox, self.epoch)
+                           self.crpix, self.crval, self.cdelt,
+                           self.crota, self.equinox, self.epoch)
         return (x0, x1)

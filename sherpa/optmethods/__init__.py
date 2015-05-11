@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -20,7 +20,7 @@
 import logging
 import numpy
 from sherpa.utils import NoNewAttributesAfterInit, \
-     get_keyword_names, get_keyword_defaults, print_fields
+    get_keyword_names, get_keyword_defaults, print_fields
 from sherpa.utils.err import FitErr
 from sherpa.optmethods.optfcts import *
 
@@ -32,9 +32,9 @@ __all__ = ('GridSearch', 'OptMethod', 'LevMar', 'MonCar', 'NelderMead')
 
 class OptMethod(NoNewAttributesAfterInit):
 
-    def __init__(self, name, optfunc):        
+    def __init__(self, name, optfunc):
         self.name = name
-	self._optfunc = optfunc
+        self._optfunc = optfunc
         self.config = self.default_config
         NoNewAttributesAfterInit.__init__(self)
 
@@ -74,7 +74,7 @@ class OptMethod(NoNewAttributesAfterInit):
     def __str__(self):
         names = ['name']
         names.extend(get_keyword_names(self._optfunc))
-        #names.remove('full_output')
+        # names.remove('full_output')
         # Add the method's name to printed output
         # Don't add to self.config b/c name isn't a
         # fit function config setting
@@ -85,7 +85,7 @@ class OptMethod(NoNewAttributesAfterInit):
 
     def _get_default_config(self):
         args = get_keyword_defaults(self._optfunc)
-	return args
+        return args
     default_config = property(_get_default_config)
 
     def fit(self, statfunc, pars, parmins, parmaxes, statargs=(),
@@ -94,7 +94,7 @@ class OptMethod(NoNewAttributesAfterInit):
         def cb(pars):
             return statfunc(pars, *statargs, **statkwargs)
 
-	output = self._optfunc(cb, pars, parmins, parmaxes, **self.config)
+        output = self._optfunc(cb, pars, parmins, parmaxes, **self.config)
 
         success = output[0]
         msg = output[3]
@@ -107,17 +107,21 @@ class OptMethod(NoNewAttributesAfterInit):
         output[1] = numpy.asarray(output[1]).ravel()
         output = tuple(output)
 
-	return output
+        return output
+
 
 class GridSearch(OptMethod):
+
     """A simple iterative method to support the template model interface,
     the method can be used for non-template model but it is very ineffecient
     for this purpose."""
-    
+
     def __init__(self, name='gridsearch'):
-	OptMethod.__init__(self, name, grid_search)
+        OptMethod.__init__(self, name, grid_search)
+
 
 class LevMar(OptMethod):
+
     """
   LMDIF.
 
@@ -302,22 +306,21 @@ class LevMar(OptMethod):
          where P is a permutation matrix and JAC is the final calcu-
          lated J"""
 
-
     def __init__(self, name='levmar'):
-	OptMethod.__init__(self, name, lmdif)
+        OptMethod.__init__(self, name, lmdif)
 
 
 class MonCar(OptMethod):
 
     def __init__(self, name='moncar'):
-	OptMethod.__init__(self, name, montecarlo)
+        OptMethod.__init__(self, name, montecarlo)
 
 
 # Call Sherpa's Nelder-Mead implementation
 class NelderMead(OptMethod):
 
     def __init__(self, name='simplex'):
-	OptMethod.__init__(self, name, neldermead)
+        OptMethod.__init__(self, name, neldermead)
 
 
 ###############################################################################
@@ -331,10 +334,10 @@ class NelderMead(OptMethod):
 ## from sherpa.optmethods.chokkan import chokkanlbfgs
 ## from sherpa.optmethods.odr import odrf77
 
-## def myall( targ, arg ):
+# def myall( targ, arg ):
 ##     fubar = list( targ )
 ##     fubar.append( arg )
-##     return tuple( fubar )
+# return tuple( fubar )
 
 ## __all__ = myall( __all__, 'Bobyqa' )
 ## __all__ = myall( __all__, 'Chokkan' )
@@ -343,75 +346,75 @@ class NelderMead(OptMethod):
 ## __all__ = myall( __all__, 'MarLev' )
 ## __all__ = myall( __all__, 'MyMinim' )
 ## __all__ = myall( __all__, 'Nelder_Mead' )
-## __all__ = myall( __all__, 'NMPFIT' )        
+## __all__ = myall( __all__, 'NMPFIT' )
 ## __all__ = myall( __all__, 'Newuoa' )
 ## __all__ = myall( __all__, 'Odr' )
 ## __all__ = myall( __all__, 'OdrPack' )
 ## __all__ = myall( __all__, 'PortChi' )
-## __all__ = myall( __all__, 'PortFct' )    
+## __all__ = myall( __all__, 'PortFct' )
 ## __all__ = myall( __all__, 'ScipyPowell' )
 ## __all__ = myall( __all__, 'StoGo' )
 
-## class Bobyqa(OptMethod):
-##     def __init__(self, name='bobyqa'):
+# class Bobyqa(OptMethod):
+# def __init__(self, name='bobyqa'):
 ##         OptMethod.__init__(self, name, myoptfcts.bobyqa)
 
-## class Chokkan(OptMethod):
-##     def __init__(self, name='chokkan'):
+# class Chokkan(OptMethod):
+# def __init__(self, name='chokkan'):
 ##         OptMethod.__init__(self, name, chokkanlbfgs)
 
-## class cppLevMar(OptMethod):
+# class cppLevMar(OptMethod):
 
-##    def __init__(self, name='clevmar'):
+# def __init__(self, name='clevmar'):
 ## 	OptMethod.__init__(self, name, optfcts.lmdif_cpp)
-    
-## class Dif_Evo(OptMethod):
-##     def __init__(self, name='dif_evo'):
+
+# class Dif_Evo(OptMethod):
+# def __init__(self, name='dif_evo'):
 ##         OptMethod.__init__(self, name, myoptfcts.dif_evo)
-                 
-## class MarLev(OptMethod):
-##     def __init__(self, name='marlev'):
+
+# class MarLev(OptMethod):
+# def __init__(self, name='marlev'):
 ##         OptMethod.__init__(self, name, myoptfcts.marquadt_levenberg)
 
-## class MyMinim(OptMethod):
+# class MyMinim(OptMethod):
 
-##     def __init__(self, name='simplex'):
+# def __init__(self, name='simplex'):
 ## 	OptMethod.__init__(self, name, minim)
 
-## class Nelder_Mead(OptMethod):
-##     def __init__(self, name='nelder_mead'):
+# class Nelder_Mead(OptMethod):
+# def __init__(self, name='nelder_mead'):
 ##         OptMethod.__init__(self, name, myoptfcts.nelder_mead)
 
-## class Newuoa(OptMethod):
-##     def __init__(self, name='newuoa'):
+# class Newuoa(OptMethod):
+# def __init__(self, name='newuoa'):
 ##         OptMethod.__init__(self, name, myoptfcts.newuoa)
 
-## class NMPFIT(OptMethod):
-##     def __init__(self, name='pytools_nmpfit'):
+# class NMPFIT(OptMethod):
+# def __init__(self, name='pytools_nmpfit'):
 ##         OptMethod.__init__(self, name, nmpfit.pytools_nmpfit)
 
-## class OdrPack(OptMethod):
-##     def __init__(self, name='odrpack'):
+# class OdrPack(OptMethod):
+# def __init__(self, name='odrpack'):
 ##         OptMethod.__init__(self, name, odrpack)
 
-## class Odr(OptMethod):
-##     def __init__(self, name='odr'):
+# class Odr(OptMethod):
+# def __init__(self, name='odr'):
 ##         OptMethod.__init__(self, name, odrf77)
 
-## class PortChi(OptMethod):
-##     def __init__(self, name='dn2fb'):
+# class PortChi(OptMethod):
+# def __init__(self, name='dn2fb'):
 ##         OptMethod.__init__(self, name, myoptfcts.dn2fb)
 
-## class PortFct(OptMethod):
-##     def __init__(self, name='dmnfb'):
+# class PortFct(OptMethod):
+# def __init__(self, name='dmnfb'):
 ##         OptMethod.__init__(self, name, myoptfcts.dmnfb)
-    
-## class ScipyPowell(OptMethod):
-##     def __init__(self, name='scipypowell'):
+
+# class ScipyPowell(OptMethod):
+# def __init__(self, name='scipypowell'):
 ##         OptMethod.__init__(self, name, my_fmin_powell)
 
-## class StoGo(OptMethod):
-##     def __init__(self, name='stogo'):
+# class StoGo(OptMethod):
+# def __init__(self, name='stogo'):
 ## 	OptMethod.__init__(self, name, stogo)
-        
+
 ###############################################################################

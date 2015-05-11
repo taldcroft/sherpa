@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -22,6 +22,7 @@ from distutils.command.sdist import sdist as _sdist
 from numpy.distutils.misc_util import get_data_files
 from deps import clean_deps
 
+
 class sdist(_sdist):
 
     def add_defaults(self):
@@ -36,8 +37,10 @@ class sdist(_sdist):
         if dist.has_headers():
             headers = []
             for h in dist.headers:
-                if isinstance(h,str): headers.append(h)
-                else: headers.append(h[1])
+                if isinstance(h, str):
+                    headers.append(h)
+                else:
+                    headers.append(h[1])
             self.filelist.extend(headers)
 
         return

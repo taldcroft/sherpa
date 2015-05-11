@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -54,7 +54,7 @@ from helpers.extensions import static_ext_modules
 
 import versioneer
 
-versioneer.VCS='git'
+versioneer.VCS = 'git'
 versioneer.versionfile_source = 'sherpa/_version.py'
 versioneer.versionfile_build = 'sherpa/_version.py'
 versioneer.tag_prefix = ''
@@ -69,7 +69,7 @@ meta = dict(name='sherpa',
             license='GNU GPL v3',
             long_description=open('README.md', 'rt').read(),
             platforms='Linux, Mac OS X',
-            install_requires=['numpy',],
+            install_requires=['numpy', ],
             packages=['sherpa',
                       'sherpa.estmethods',
                       'sherpa.image',
@@ -89,7 +89,7 @@ meta = dict(name='sherpa',
                       'sherpa.astro.ui',
                       'sherpa.astro.utils',
                       'sherpa.astro.xspec',
-            ],
+                      ],
             package_data={'sherpa': ['include/sherpa/*.hh',
                                      'include/sherpa/astro/*.hh',
                                      'tests/*'],
@@ -112,7 +112,7 @@ meta = dict(name='sherpa',
                           'sherpa.astro.utils': ['tests/test_*.py'],
                           },
             data_files=[('sherpa',
-		    ['sherpa/sherpa.rc', 'sherpa/sherpa-standalone.rc']), ],
+                         ['sherpa/sherpa.rc', 'sherpa/sherpa-standalone.rc']), ],
             ext_modules=static_ext_modules, cmdclass=versioneer.get_cmdclass(),
             entry_points={
                 'console_scripts': [
@@ -121,4 +121,3 @@ meta = dict(name='sherpa',
             })
 
 setup(**meta)
-

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -32,9 +32,9 @@ from sherpa.sim import *
 from sherpa.utils import SherpaTestCase, SherpaTest
 
 
-_max  = numpy.finfo(numpy.float32).max
+_max = numpy.finfo(numpy.float32).max
 _tiny = numpy.finfo(numpy.float32).tiny
-_eps  = numpy.finfo(numpy.float32).eps
+_eps = numpy.finfo(numpy.float32).eps
 
 
 class test_sim(SherpaTestCase):
@@ -48,30 +48,29 @@ class test_sim(SherpaTestCase):
         'nfev': 93,
         'statval': 8483.0287367571564,
         'parnames': ['p1.gamma', 'p1.ampl', 'g1.fwhm',
-                     'g1.pos', 'g1.ampl'], 
+                     'g1.pos', 'g1.ampl'],
         'parvals': numpy.array(
             [1.0701938169914813,
              9.1826254677279469,
              2.5862083052721028,
              2.601619746022207,
              47.262657692418749])
-        }
+    }
 
     _x = numpy.arange(0.1, 10.1, 0.1)
     _y = numpy.array(
-        [ 114, 47, 35, 30, 40, 27, 30, 26, 24, 20, 26, 35,
-          29, 28, 34, 36, 43, 39, 33, 47, 44, 46, 53, 56,
-          52, 53, 49, 57, 49, 36, 33, 42, 49, 45, 42, 32,
-          31, 34, 18, 24, 25, 11, 17, 17, 11,  9,  8,  5,
-           4, 10,  3,  4,  6,  3,  0,  2,  4,  4,  0,  1,
-           2,  0,  3,  3,  0,  2,  1,  2,  3,  0,  1,  0,
-           1,  0,  0,  1,  3,  3,  0,  2,  0,  0,  1,  2,
-           0,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,
-           1,  0,  1,  0
-          ]
-        )
+        [114, 47, 35, 30, 40, 27, 30, 26, 24, 20, 26, 35,
+         29, 28, 34, 36, 43, 39, 33, 47, 44, 46, 53, 56,
+         52, 53, 49, 57, 49, 36, 33, 42, 49, 45, 42, 32,
+         31, 34, 18, 24, 25, 11, 17, 17, 11,  9,  8,  5,
+         4, 10,  3,  4,  6,  3,  0,  2,  4,  4,  0,  1,
+         2,  0,  3,  3,  0,  2,  1,  2,  3,  0,  1,  0,
+         1,  0,  0,  1,  3,  3,  0,  2,  0,  0,  1,  2,
+         0,  1,  0,  1,  1,  0,  1,  1,  1,  1,  1,  1,
+         1,  0,  1,  0
+         ]
+    )
     _err = numpy.ones(100)*0.4
-
 
     def setUp(self):
         data = Data1D('fake', self._x, self._y, self._err)
@@ -83,7 +82,7 @@ class test_sim(SherpaTestCase):
         p1 = PowLaw1D('p1')
         p1.gamma.set(1.0, -10, 10, frozen=False)
         p1.ampl.set(1.0, 0.0, _max, frozen=False)
-        p1.ref.set(1.0, -_max, _max, frozen=True)      
+        p1.ref.set(1.0, -_max, _max, frozen=True)
         model = p1 + g1
 
         method = LevMar()
@@ -122,12 +121,11 @@ class test_sim(SherpaTestCase):
         self.cov = numpy.array(covresults.extra_output)
         self.num = 10
 
-
     def test_student_t(self):
         multivariate_t(self.mu, self.cov, self.dof, self.num)
-        
+
     def test_cauchy(self):
-        multivariate_cauchy(self.mu, self.cov, self.num)       
+        multivariate_cauchy(self.mu, self.cov, self.num)
 
     def test_parameter_scale_vector(self):
         ps = ParameterScaleVector()
@@ -140,7 +138,7 @@ class test_sim(SherpaTestCase):
     def test_uniform_parameter_sample(self):
         up = UniformParameterSampleFromScaleVector()
         up.get_sample(self.fit, num=self.num)
-        
+
     def test_normal_parameter_sample_vector(self):
         np = NormalParameterSampleFromScaleVector()
         np.get_sample(self.fit, num=self.num)
@@ -156,7 +154,7 @@ class test_sim(SherpaTestCase):
     def test_uniform_sample(self):
         up = UniformSampleFromScaleVector()
         up.get_sample(self.fit, num=self.num)
-        
+
     def test_normal_sample_vector(self):
         np = NormalSampleFromScaleVector()
         np.get_sample(self.fit, num=self.num)
@@ -185,7 +183,6 @@ class test_sim(SherpaTestCase):
         results = LikelihoodRatioTest.run(self.fit, self.fit.model.lhs,
                                           self.fit.model, niter=25)
 
-
     def test_mh(self):
 
         self.fit.method = NelderMead()
@@ -195,7 +192,7 @@ class test_sim(SherpaTestCase):
         cov = results.extra_output
 
         mcmc = MCMC()
-        
+
         samplers = mcmc.list_samplers()
         priors = mcmc.list_priors()
         for par in self.fit.model.pars:
@@ -217,7 +214,6 @@ class test_sim(SherpaTestCase):
         stats, accept, params = mcmc.get_draws(self.fit, cov, niter=1e2)
         log.setLevel(level)
 
-
     def test_metropolisMH(self):
 
         self.fit.method = NelderMead()
@@ -229,13 +225,12 @@ class test_sim(SherpaTestCase):
         mcmc = MCMC()
         mcmc.set_sampler('MetropolisMH')
         #mcmc.set_sampler_opt('verbose', True)
-        
+
         log = logging.getLogger("sherpa")
         level = log.level
         log.setLevel(logging.ERROR)
         stats, accept, params = mcmc.get_draws(self.fit, cov, niter=1e2)
         log.setLevel(level)
- 
 
     def tearDown(self):
         pass

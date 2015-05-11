@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -48,19 +48,19 @@ class Image(NoNewAttributesAfterInit):
 
     def __init__(self):
         NoNewAttributesAfterInit.__init__(self)
-        
+
     def close():
         backend.close()
     close = staticmethod(close)
-    
+
     def delete_frames():
         backend.delete_frames()
     delete_frames = staticmethod(delete_frames)
-    
+
     def get_region(coord):
         return backend.get_region(coord)
     get_region = staticmethod(get_region)
-    
+
     def image(self, array, shape=None, newframe=False, tile=False):
         newframe = bool_cast(newframe)
         tile = bool_cast(tile)
@@ -68,25 +68,26 @@ class Image(NoNewAttributesAfterInit):
             backend.image(array, newframe, tile)
         else:
             backend.image(array.reshape(shape), newframe, tile)
-    
+
     def open():
         backend.open()
     open = staticmethod(open)
 
     def set_wcs(self, keys):
-        backend.wcs( keys )
-    
+        backend.wcs(keys)
+
     def set_region(reg, coord):
         backend.set_region(reg, coord)
     set_region = staticmethod(set_region)
-    
+
     def xpaget(arg):
         return backend.xpaget(arg)
     xpaget = staticmethod(xpaget)
-    
+
     def xpaset(arg, data=None):
         return backend.xpaset(arg, data=None)
     xpaset = staticmethod(xpaset)
+
 
 class DataImage(Image):
 
@@ -101,11 +102,11 @@ class DataImage(Image):
         y = self.y
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
-        return (('name   = %s\n' % self.name)+
-                ('y      = %s\n' % y)+
-                ('eqpos  = %s\n' % self.eqpos)+
+        return (('name   = %s\n' % self.name) +
+                ('y      = %s\n' % y) +
+                ('eqpos  = %s\n' % self.eqpos) +
                 ('sky    = %s\n' % self.sky))
-    
+
     def prepare_image(self, data):
         self.y = data.get_img()
         self.eqpos = getattr(data, 'eqpos', None)
@@ -115,7 +116,6 @@ class DataImage(Image):
             obj = header.get('OBJECT')
             if obj is not None:
                 self.name = str(obj).replace(" ", "_")
-
 
     def image(self, shape=None, newframe=False, tile=False):
         Image.image(self, self.y, shape, newframe, tile)
@@ -135,11 +135,11 @@ class ModelImage(Image):
         y = self.y
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
-        return (('name   = %s\n' % self.name)+
-                ('y      = %s\n' % y)+
-                ('eqpos  = %s\n' % self.eqpos)+
+        return (('name   = %s\n' % self.name) +
+                ('y      = %s\n' % y) +
+                ('eqpos  = %s\n' % self.eqpos) +
                 ('sky    = %s\n' % self.sky))
-    
+
     def prepare_image(self, data, model):
         self.y = data.get_img(model)
         self.y = self.y[1]
@@ -152,6 +152,7 @@ class ModelImage(Image):
 
 
 class SourceImage(ModelImage):
+
     def __init__(self):
         ModelImage.__init__(self)
         self.name = 'Source'
@@ -181,9 +182,9 @@ class RatioImage(Image):
         y = self.y
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
-        return (('name   = %s\n' % self.name)+
-                ('y      = %s\n' % y)+
-                ('eqpos  = %s\n' % self.eqpos)+
+        return (('name   = %s\n' % self.name) +
+                ('y      = %s\n' % y) +
+                ('eqpos  = %s\n' % self.eqpos) +
                 ('sky    = %s\n' % self.sky))
 
     def _calc_ratio(self, ylist):
@@ -204,6 +205,7 @@ class RatioImage(Image):
         Image.image(self, self.y, shape, newframe, tile)
         Image.set_wcs(self, (self.eqpos, self.sky, self.name))
 
+
 class ResidImage(Image):
 
     def __init__(self):
@@ -217,14 +219,14 @@ class ResidImage(Image):
         y = self.y
         if self.y is not None:
             y = numpy.array2string(self.y, separator=',', precision=4, suppress_small=False)
-        return (('name   = %s\n' % self.name)+
-                ('y      = %s\n' % y)+
-                ('eqpos  = %s\n' % self.eqpos)+
+        return (('name   = %s\n' % self.name) +
+                ('y      = %s\n' % y) +
+                ('eqpos  = %s\n' % self.eqpos) +
                 ('sky    = %s\n' % self.sky))
-    
+
     def _calc_resid(self, ylist):
         return ylist[0] - ylist[1]
-            
+
     def prepare_image(self, data, model):
         self.y = data.get_img(model)
         self.y = self._calc_resid(self.y)
@@ -258,6 +260,7 @@ class ComponentSourceImage(ModelImage):
         ModelImage.prepare_image(self, data, model)
         #self.name = "Source component '%s'" % model.name
         self.name = "Source_component"
+
 
 class ComponentModelImage(ModelImage):
 

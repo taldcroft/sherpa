@@ -889,6 +889,7 @@ class cmd_version(Command):
 
 
 class cmd_build(_build):
+
     def run(self):
         versions = get_versions(verbose=True)
         _build.run(self)
@@ -906,6 +907,7 @@ if 'cx_Freeze' in sys.modules:  # cx_freeze enabled?
     from cx_Freeze.dist import build_exe as _build_exe
 
     class cmd_build_exe(_build_exe):
+
         def run(self):
             versions = get_versions(verbose=True)
             target_versionfile = versionfile_source
@@ -927,6 +929,7 @@ if 'cx_Freeze' in sys.modules:  # cx_freeze enabled?
 
 
 class cmd_sdist(_sdist):
+
     def run(self):
         versions = get_versions(verbose=True)
         self._versioneer_generated_versions = versions
@@ -1039,4 +1042,3 @@ def get_cmdclass():
         commands['build_exe'] = cmd_build_exe
         del commands['build']
     return commands
-

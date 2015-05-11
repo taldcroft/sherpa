@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2009  Smithsonian Astrophysical Observatory
 #
 #
@@ -30,7 +30,7 @@ __all__ = ('Meta',)
 class Meta(NoNewAttributesAfterInit):
 
     def __init__(self):
-        self.__header={}
+        self.__header = {}
         NoNewAttributesAfterInit.__init__(self)
 
     def __getitem__(self, name):

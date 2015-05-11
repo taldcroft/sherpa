@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2008  Smithsonian Astrophysical Observatory
 #
 #
@@ -28,18 +28,20 @@ from itertools import izip
 import numpy
 from sherpa.utils.err import DataErr, NotImplementedErr
 from sherpa.utils import SherpaFloat, NoNewAttributesAfterInit, \
-     print_fields, create_expr, calc_total_error, bool_cast, \
-     filter_bins
+    print_fields, create_expr, calc_total_error, bool_cast, \
+    filter_bins
 
 
 _all__ = ('Data', 'DataSimulFit', 'Data1D', 'Data1DInt', 'Data2D', 'Data2DInt')
 
 
 class BaseData(NoNewAttributesAfterInit):
+
     "Base class for all data set types"
 
     def _get_filter(self):
         return self._filter
+
     def _set_filter(self, val):
         self._filter = val
         self._mask = True
@@ -48,6 +50,7 @@ class BaseData(NoNewAttributesAfterInit):
 
     def _get_mask(self):
         return self._mask
+
     def _set_mask(self, val):
         if (val is True) or (val is False):
             self._mask = val
@@ -88,7 +91,7 @@ class BaseData(NoNewAttributesAfterInit):
         assert cond, (('%s constructor must call BaseData constructor ' +
                        'directly') % type(self).__name__)
         args = inspect.getargvalues(frame)
-        
+
         self._fields = tuple(args[0][1:])
         for f in self._fields:
             cond = (f not in vars(self))
@@ -136,11 +139,11 @@ class BaseData(NoNewAttributesAfterInit):
     def notice(self, mins, maxes, axislist, ignore=False):
 
         ignore = bool_cast(ignore)
-        if( str in [type(min) for min in mins] ):
+        if(str in [type(min) for min in mins]):
             raise DataErr('typecheck', 'lower bound')
-        elif( str in [type(max) for max in maxes] ):
+        elif(str in [type(max) for max in maxes]):
             raise DataErr('typecheck', 'upper bound')
-        elif( str in [type(axis) for axis in axislist] ):
+        elif(str in [type(axis) for axis in axislist]):
             raise DataErr('typecheck', 'grid')
 
         mask = filter_bins(mins, maxes, axislist)
@@ -161,6 +164,7 @@ class BaseData(NoNewAttributesAfterInit):
 
 
 class Data(BaseData):
+
     "Generic data set"
 
     def __init__(self, name, indep, dep, staterror=None, syserror=None):
@@ -197,7 +201,7 @@ class Data(BaseData):
     def get_indep(self, filter=False):
         "Return a tuple containing the independent variables/axes"
         indep = getattr(self, 'indep', None)
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             indep = tuple([self.apply_filter(x) for x in indep])
         return indep
@@ -205,7 +209,7 @@ class Data(BaseData):
     def get_dep(self, filter=False):
         "Return an array of dependent variable values"
         dep = getattr(self, 'dep', None)
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             dep = self.apply_filter(dep)
         return dep
@@ -214,10 +218,10 @@ class Data(BaseData):
         "Return the statistical error array"
 
         staterror = getattr(self, 'staterror', None)
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             staterror = self.apply_filter(staterror)
-        
+
         if (staterror is None) and (staterrfunc is not None):
             dep = self.get_dep()
             if filter:
@@ -228,7 +232,7 @@ class Data(BaseData):
     def get_syserror(self, filter=False):
         "Return the systematic error array"
         syserr = getattr(self, 'syserror', None)
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             syserr = self.apply_filter(syserr)
         return syserr
@@ -238,10 +242,10 @@ class Data(BaseData):
     #
 
     def _wrong_dim_error(self, baddim):
-	raise DataErr('wrongdim', self.name, baddim)
+        raise DataErr('wrongdim', self.name, baddim)
 
     def _no_image_error(self):
-	raise DataErr('notimage', self.name)
+        raise DataErr('notimage', self.name)
 
     def _no_dim_error(self):
         raise DataErr('nodim', self.name)
@@ -262,15 +266,15 @@ class Data(BaseData):
 
     def get_x(self, filter=False):
         "Return linear view of independent axis/axes"
-	self._wrong_dim_error(1)
+        self._wrong_dim_error(1)
 
     def get_xerr(self, filter=False):
         "Return linear view of bin size in independent axis/axes"
-	return None
+        return None
 
     def get_xlabel(self):
         "Return label for linear view ofindependent axis/axes"
-	return 'x'
+        return 'x'
 
     def get_y(self, filter=False, yfunc=None):
         "Return dependent axis in N-D view of dependent variable"
@@ -287,23 +291,23 @@ class Data(BaseData):
 
     def get_yerr(self, filter=False, staterrfunc=None):
         "Return errors in dependent axis in N-D view of dependent variable"
-	return self.get_error(filter, staterrfunc) 
+        return self.get_error(filter, staterrfunc)
 
     def get_ylabel(self, yfunc=None):
         "Return label for dependent axis in N-D view of dependent variable"
-	return 'y'
+        return 'y'
 
     def get_x0(self, filter=False):
         "Return first dimension in 2-D view of independent axis/axes"
-	self._wrong_dim_error(2)
+        self._wrong_dim_error(2)
 
     def get_x0label(self):
         "Return label for first dimension in 2-D view of independent axis/axes"
-	return 'x0'
+        return 'x0'
 
     def get_x1(self, filter=False):
         "Return second dimension in 2-D view of independent axis/axes"
-	self._wrong_dim_error(2)
+        self._wrong_dim_error(2)
 
     def get_x1label(self):
         """
@@ -311,18 +315,18 @@ class Data(BaseData):
         Return label for second dimension in 2-D view of independent axis/axes
 
         """
-	return 'x1'
+        return 'x1'
 
     # For images, only need y-array
     # Also, we do not filter, as imager needs M x N (or
     # L x M x N) array
     def get_img(self, yfunc=None):
         "Return dependent variable as an image"
-	self._no_image_error()
+        self._no_image_error()
 
     def get_imgerr(self, yfunc=None):
         "Return total error in dependent variable as an image"
-	self._no_image_error()
+        self._no_image_error()
 
     def to_guess(self):
         arrays = [self.get_y(True)]
@@ -363,16 +367,16 @@ class DataSimulFit(Data):
 
         for func, data in izip(modelfuncs, self.datasets):
             total_model.append(data.eval_model_to_fit(func))
-        
+
         return numpy.concatenate(total_model)
 
-    def to_fit(self, staterrfunc=None):        
+    def to_fit(self, staterrfunc=None):
         total_dep = []
         total_staterror = []
         total_syserror = []
 
         no_staterror = True
-        no_syserror  = True
+        no_syserror = True
 
         for data in self.datasets:
             dep, staterror, syserror = data.to_fit(staterrfunc)
@@ -410,11 +414,12 @@ class DataSimulFit(Data):
 
 
 class DataND(Data):
+
     "Base class for Data1D, Data2D, etc."
 
     def get_dep(self, filter=False):
         y = self.y
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             y = self.apply_filter(y)
         return y
@@ -431,6 +436,7 @@ class DataND(Data):
 
 
 class Data1D(DataND):
+
     "1-D data set"
 
     def _set_mask(self, val):
@@ -445,10 +451,10 @@ class Data1D(DataND):
 
     def __init__(self, name, x, y, staterror=None, syserror=None):
         self._x = x
-	BaseData.__init__(self)
+        BaseData.__init__(self)
 
     def get_indep(self, filter=False):
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             return (self._x,)
         return (self.x,)
@@ -489,23 +495,24 @@ class Data1D(DataND):
         "Return 1D dependent variable as a 1 x N image"
         y_img = self.get_y(False, yfunc)
         if yfunc is not None:
-            y_img = (y_img[0].reshape(1,y_img[0].size),
-                     y_img[1].reshape(1,y_img[1].size))
+            y_img = (y_img[0].reshape(1, y_img[0].size),
+                     y_img[1].reshape(1, y_img[1].size))
         else:
-            y_img = y_img.reshape(1,y_img.size)
+            y_img = y_img.reshape(1, y_img.size)
         return y_img
-    
+
     def get_imgerr(self):
-	err = self.get_error()
-	if err is not None:
-	    err = err.reshape(1,err.size)
-	return err
+        err = self.get_error()
+        if err is not None:
+            err = err.reshape(1, err.size)
+        return err
 
     def notice(self, xlo=None, xhi=None, ignore=False):
         BaseData.notice(self, (xlo,), (xhi,), self.get_indep(), ignore)
 
 
 class Data1DInt(Data1D):
+
     "1-D integrated data set"
 
     def _set_mask(self, val):
@@ -523,20 +530,20 @@ class Data1DInt(Data1D):
     def __init__(self, name, xlo, xhi, y, staterror=None, syserror=None):
         self._lo = xlo
         self._hi = xhi
-	BaseData.__init__(self)
+        BaseData.__init__(self)
 
     def get_indep(self, filter=False):
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             return (self._lo, self._hi)
-	return (self.xlo, self.xhi)
+        return (self.xlo, self.xhi)
 
     def get_x(self, filter=False):
         indep = self.get_indep(filter)
         return (indep[0] + indep[1]) / 2.0
 
     def get_xerr(self, filter=False):
-        xlo,xhi = self.get_indep(filter)
+        xlo, xhi = self.get_indep(filter)
         return xhi-xlo
 
     def notice(self, xlo=None, xhi=None, ignore=False):
@@ -545,6 +552,7 @@ class Data1DInt(Data1D):
 
 
 class Data2D(DataND):
+
     "2-D data set"
 
     def _set_mask(self, val):
@@ -563,17 +571,16 @@ class Data2D(DataND):
                  syserror=None):
         self._x0 = x0
         self._x1 = x1
-	BaseData.__init__(self)
+        BaseData.__init__(self)
 
     def get_indep(self, filter=False):
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             return (self._x0, self._x1)
-	return (self.x0, self.x1)
+        return (self.x0, self.x1)
 
     def get_x0(self, filter=False):
         return self.get_indep(filter)[0]
-
 
     def get_x1(self, filter=False):
         return self.get_indep(filter)[1]
@@ -584,7 +591,7 @@ class Data2D(DataND):
         return (numpy.arange(self.shape[1])+1, numpy.arange(self.shape[0])+1)
 
     def get_dims(self, filter=False):
-        #self._check_shape()
+        # self._check_shape()
         if self.shape is not None:
             return self.shape[::-1]
         return (len(self.get_x0(filter)), len(self.get_x1(filter)))
@@ -596,7 +603,7 @@ class Data2D(DataND):
 
     def _check_shape(self):
         if self.shape is None:
-            raise DataErr('shape',self.name)
+            raise DataErr('shape', self.name)
 
     def get_max_pos(self, dep=None):
         if dep is None:
@@ -619,14 +626,14 @@ class Data2D(DataND):
                      y_img[1].reshape(*self.shape))
         else:
             y_img = y_img.reshape(*self.shape)
-	return y_img
+        return y_img
 
     def get_imgerr(self):
         self._check_shape()
-	err = self.get_error()
-	if err is not None:
-	    err = err.reshape(*self.shape)
-	return err
+        err = self.get_error()
+        if err is not None:
+            err = err.reshape(*self.shape)
+        return err
 
     def notice(self, x0lo=None, x0hi=None, x1lo=None, x1hi=None, ignore=False):
         BaseData.notice(self, (x0lo, x1lo), (x0hi, x1hi), self.get_indep(),
@@ -634,6 +641,7 @@ class Data2D(DataND):
 
 
 class Data2DInt(Data2D):
+
     "2-D integrated data set"
 
     def _set_mask(self, val):
@@ -658,13 +666,13 @@ class Data2DInt(Data2D):
         self._x1lo = x1lo
         self._x0hi = x0hi
         self._x1hi = x1hi
-	BaseData.__init__(self)
+        BaseData.__init__(self)
 
     def get_indep(self, filter=False):
-        filter=bool_cast(filter)
+        filter = bool_cast(filter)
         if filter:
             return (self._x0lo, self._x1lo, self._x0hi, self._x1hi)
-	return (self.x0lo, self.x1lo, self.x0hi, self.x1hi)
+        return (self.x0lo, self.x1lo, self.x0hi, self.x1hi)
 
     def get_x0(self, filter=False):
         indep = self.get_indep(filter)

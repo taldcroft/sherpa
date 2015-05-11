@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -30,7 +30,9 @@ _samplers.update(dict(pragbayes=PragBayes, fullbayes=FullBayes))
 _walkers = __walkers.copy()
 _walkers.update(dict(pragbayes=WalkWithSubIters, fullbayes=WalkWithSubIters))
 
+
 class MCMC(_MCMC):
+
     """
 
     High-level UI to pyBLoCXS that joins the loop in 'Walk' with the jumping

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2011  Smithsonian Astrophysical Observatory
 #
 #
@@ -38,9 +38,11 @@ _tol = numpy.finfo(numpy.float).eps
 def flat(x):
     return 1.0
 
+
 def inverse(x):
     prior = 1.0/x
     return prior
+
 
 def inverse2(x):
     prior = 1.0/(x*x)
@@ -51,6 +53,7 @@ _walkers = dict(metropolismh=Walk, mh=Walk)
 
 
 class MCMC(NoNewAttributesAfterInit):
+
     """
 
     High-level UI to pyBLoCXS that joins the loop in 'Walk' with the jumping
@@ -62,14 +65,12 @@ class MCMC(NoNewAttributesAfterInit):
 
     __walkers = _walkers.copy()
 
-
     def _get_sampler(self):
         return self._sampler
 
     def _set_sampler(self, sampler):
         self._sampler = sampler
         self._sampler_opt = get_keyword_defaults(sampler.init)
-
 
     sampler = property(_get_sampler, _set_sampler)
 
@@ -79,9 +80,7 @@ class MCMC(NoNewAttributesAfterInit):
     def _set_walker(self, walker):
         self._walker = walker
 
-
     walker = property(_get_walker, _set_walker)
-
 
     def _get_sampler_opt(self, opt):
         return self._sampler_opt[opt]
@@ -89,16 +88,14 @@ class MCMC(NoNewAttributesAfterInit):
     def _set_sampler_opt(self, opt, val):
         self._sampler_opt[opt] = val
 
-
     def __init__(self):
         self.priors = {}
         self._walker = Walk
         self._sampler = MetropolisMH
         self._sampler_opt = get_keyword_defaults(MetropolisMH.init)
         self.sample = None
-        self.walk = lambda : None
+        self.walk = lambda: None
         NoNewAttributesAfterInit.__init__(self)
-
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -106,12 +103,10 @@ class MCMC(NoNewAttributesAfterInit):
         del state['sample']
         return state
 
-
     def __setstate__(self, state):
-        self.walk = lambda : None
+        self.walk = lambda: None
         self.sample = None
         self.__dict__.update(state)
-
 
     def list_priors(self):
         """
@@ -120,7 +115,6 @@ class MCMC(NoNewAttributesAfterInit):
 
         """
         return str(self.priors)
-
 
     def get_prior(self, par):
         """
@@ -136,7 +130,6 @@ class MCMC(NoNewAttributesAfterInit):
             raise ValueError("prior function has not been set for '%s'" %
                              par.fullname)
         return prior
-
 
     def set_prior(self, par, prior):
         """
@@ -154,13 +147,11 @@ class MCMC(NoNewAttributesAfterInit):
         """
         self.priors[par.fullname] = prior
 
-
     def list_samplers(self):
         """
         List the dictionary of available MCMC Sampler classes
-        """       
+        """
         return self.__samplers.keys()
-
 
     def set_sampler(self, sampler):
         """
@@ -179,7 +170,7 @@ class MCMC(NoNewAttributesAfterInit):
 
         """
         if isinstance(sampler, basestring):
-            
+
             # case insensitive
             sampler = str(sampler).lower()
 
@@ -196,7 +187,6 @@ class MCMC(NoNewAttributesAfterInit):
         else:
             raise TypeError("Unknown sampler '%s'" % sampler)
 
-
     def get_sampler(self):
         """
         Return the current sampler's dictionary of configuration options
@@ -204,9 +194,8 @@ class MCMC(NoNewAttributesAfterInit):
         returns a dictionary of configuration options
 
         """
-        #return self.sampler
+        # return self.sampler
         return self._sampler_opt.copy()
-
 
     def get_sampler_name(self):
         """
@@ -215,7 +204,6 @@ class MCMC(NoNewAttributesAfterInit):
         returns a string indicating the current sampler type
         """
         return self.sampler.__name__
-
 
     def get_sampler_opt(self, opt):
         """
@@ -233,7 +221,6 @@ class MCMC(NoNewAttributesAfterInit):
         """
         return self._get_sampler_opt(opt)
 
-
     def set_sampler_opt(self, opt, value):
         """
         Set the sampler configuration option for use within pyblocxs
@@ -249,9 +236,6 @@ class MCMC(NoNewAttributesAfterInit):
 
         """
         self._set_sampler_opt(opt, value)
-
-
-
 
     def get_draws(self, fit, sigma, niter=1000):
         """ 
@@ -298,19 +282,19 @@ class MCMC(NoNewAttributesAfterInit):
         sampler_kwargs = self._sampler_opt.copy()
         sampler_kwargs['priors'] = priors
 
-        oldthawedpars  = numpy.array(mu)
-        thawedparmins  = fit.model.thawedparhardmins
+        oldthawedpars = numpy.array(mu)
+        thawedparmins = fit.model.thawedparhardmins
         thawedparmaxes = fit.model.thawedparhardmaxes
 
         def calc_stat(proposed_params):
 
             # automatic rejection outside hard limits
-            mins  = sao_fcmp(proposed_params, thawedparmins, _tol)
+            mins = sao_fcmp(proposed_params, thawedparmins, _tol)
             maxes = sao_fcmp(thawedparmaxes, proposed_params, _tol)
             if -1 in mins or -1 in maxes:
-                #print'hard limit exception'
+                # print'hard limit exception'
                 raise LimitError('Sherpa parameter hard limit exception')
-            
+
             level = _log.getEffectiveLevel()
 
             try:
@@ -338,7 +322,7 @@ class MCMC(NoNewAttributesAfterInit):
 
         try:
             fit.model.startup()
-            self.sample = sampler(calc_stat, sigma, mu, dof, fit)        
+            self.sample = sampler(calc_stat, sigma, mu, dof, fit)
             self.walk = walker(self.sample, niter)
             stats, accept, params = self.walk(**sampler_kwargs)
         finally:

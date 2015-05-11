@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2012  Smithsonian Astrophysical Observatory
 #
 #
@@ -22,9 +22,12 @@ from sherpa.utils import SherpaTest, SherpaTestCase, needs_data
 from sherpa.models import ArithmeticModel, Parameter
 from sherpa.utils.err import ModelErr
 import sherpa.ui as ui
-import numpy, logging, os
+import numpy
+import logging
+import os
 
 logger = logging.getLogger("sherpa")
+
 
 class UserModel(ArithmeticModel):
 
@@ -38,6 +41,7 @@ class UserModel(ArithmeticModel):
     def calc(self, p, x, *args, **kwargs):
         return p[0]*x+p[1]
 
+
 class test_ui(SherpaTestCase):
 
     @needs_data
@@ -47,8 +51,8 @@ class test_ui(SherpaTestCase):
         self.double = self.datadir + '/double.dat'
         self.filter = self.datadir + '/filter_single_integer.dat'
         self.func = lambda x: x
-        
-        ui.dataspace1d(1,1000,dstype=ui.Data1D)
+
+        ui.dataspace1d(1, 1000, dstype=ui.Data1D)
 
     @needs_data
     def test_ascii(self):
@@ -56,20 +60,17 @@ class test_ui(SherpaTestCase):
         ui.load_data(1, self.ascii, 2)
         ui.load_data(1, self.ascii, 2, ("col2", "col1"))
 
-
     # Test table model
     @needs_data
     def test_table_model_ascii_table(self):
         ui.load_table_model('tbl', self.single)
         ui.load_table_model('tbl', self.double)
 
-
     # Test user model
     @needs_data
     def test_user_model_ascii_table(self):
         ui.load_user_model(self.func, 'mdl', self.single)
         ui.load_user_model(self.func, 'mdl', self.double)
-
 
     @needs_data
     def test_filter_ascii(self):
@@ -92,30 +93,33 @@ class test_ui(SherpaTestCase):
     @needs_data
     def test_source_methods_with_full_model(self):
         from sherpa.utils.err import IdentifierErr
-        
+
         ui.load_data('full', self.ascii)
         ui.set_full_model('full', 'powlaw1d.p1')
-        
+
         # Test Case 1
         try:
             ui.get_source('full')
         except IdentifierErr as e:
-            self.assertRegexpMatches(str(e), "Convolved model\n.*\n is set for dataset full. You should use get_model instead.", str(e))
+            self.assertRegexpMatches(
+                str(e), "Convolved model\n.*\n is set for dataset full. You should use get_model instead.", str(e))
         try:
             ui.plot_source('full')
         except IdentifierErr as e:
-            self.assertEquals("Convolved model\n'p1'\n is set for dataset full. You should use plot_model instead.", str(e))
-        
+            self.assertEquals(
+                "Convolved model\n'p1'\n is set for dataset full. You should use plot_model instead.", str(e))
+
         # Test Case 2
         ui.set_source('full', 'powlaw1d.p2')
         ui.get_source('full')
-        
+
         # Test Case 3
         ui.load_data('not_full', self.ascii)
         try:
             ui.get_source('not_full')
         except IdentifierErr as e:
-            self.assertEquals('source not_full has not been set, consider using set_source() or set_model()', str(e))
+            self.assertEquals(
+                'source not_full has not been set, consider using set_source() or set_model()', str(e))
 
 
 class test_psf_ui(SherpaTestCase):
@@ -136,22 +140,21 @@ class test_psf_ui(SherpaTestCase):
                 ui.load_psf('psf1d', model+'.mdl')
                 ui.set_psf('psf1d')
                 mdl = ui.get_model_component('mdl')
-                self.assert_( (numpy.array(mdl.get_center()) ==
-                               numpy.array([4])).all() )
+                self.assert_((numpy.array(mdl.get_center()) ==
+                              numpy.array([4])).all())
             except:
                 print model
                 raise
 
-
     def test_psf_model2d(self):
-        ui.dataspace2d([216,261])
+        ui.dataspace2d([216, 261])
         for model in self.models2d:
             try:
                 ui.load_psf('psf2d', model+'.mdl')
                 ui.set_psf('psf2d')
                 mdl = ui.get_model_component('mdl')
-                self.assert_( (numpy.array(mdl.get_center()) ==
-                               numpy.array([108,130])).all() )
+                self.assert_((numpy.array(mdl.get_center()) ==
+                              numpy.array([108, 130])).all())
             except:
                 print model
                 raise

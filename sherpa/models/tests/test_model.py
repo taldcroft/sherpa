@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -75,7 +75,7 @@ class test_model(SherpaTestCase):
         self.assertRaises(ModelErr, setattr, self.m, 'thawedpars', pars[:2])
         self.assertRaises(ValueError, setattr, self.m, 'thawedpars',
                           [1, 2, 'ham'])
-        
+
         pars[0] = self.m.pars[0].hard_min / 10
         pars[1] = self.m.pars[1].hard_max * 10
 
@@ -105,9 +105,9 @@ class test_model(SherpaTestCase):
 class test_composite_model(SherpaTestCase):
 
     def setUp(self):
-        self.m  = Const1D('m')
+        self.m = Const1D('m')
         self.m2 = Const1D('m2')
-        self.m.c0  = 2
+        self.m.c0 = 2
         self.m2.c0 = 4
         self.s = Sin('s')
         self.x = 1.0

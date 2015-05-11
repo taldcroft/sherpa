@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2009  Smithsonian Astrophysical Observatory
 #
 #
@@ -37,10 +37,10 @@ config.read(get_config())
 # truncation_flag indicates whether or not model truncation
 # should be performed.  If true, use the truncation_value from
 # the config file.
-truncation_flag = config.get('statistics','truncate').upper()
-truncation_value = float(config.get('statistics','trunc_value'))
+truncation_flag = config.get('statistics', 'truncate').upper()
+truncation_value = float(config.get('statistics', 'trunc_value'))
 if (bool(truncation_flag) is False or truncation_flag == "FALSE" or
-    truncation_flag == "NONE" or truncation_flag == "0"):
+        truncation_flag == "NONE" or truncation_flag == "0"):
     truncation_value = -1.0
 
 
@@ -63,8 +63,11 @@ class Stat(NoNewAttributesAfterInit):
                   weight=None):
         raise NotImplementedError
 
+
 class Likelihood(Stat):
+
     """Maximum likelihood function"""
+
     def __init__(self, name='likelihood'):
         Stat.__init__(self, name)
 
@@ -76,7 +79,9 @@ class Likelihood(Stat):
 
 
 class Cash(Likelihood):
+
     """Maximum likelihood function"""
+
     def __init__(self, name='cash'):
         Likelihood.__init__(self, name)
 
@@ -87,7 +92,9 @@ class Cash(Likelihood):
 
 
 class CStat(Likelihood):
+
     """Maximum likelihood function (XSPEC style)"""
+
     def __init__(self, name='cstat'):
         Likelihood.__init__(self, name)
 
@@ -98,36 +105,43 @@ class CStat(Likelihood):
 
 
 class Chi2(Stat):
+
     """Chi Squared"""
+
     def __init__(self, name='chi2'):
         Stat.__init__(self, name)
 
     @staticmethod
     def calc_staterror(data):
-         raise StatErr('chi2noerr')
+        raise StatErr('chi2noerr')
 
     @staticmethod
     def calc_stat(data, model, staterror, syserror=None, weight=None):
         return _statfcts.calc_chi2_stat(data, model, staterror,
                                         syserror, weight, truncation_value)
 
+
 class LeastSq(Chi2):
+
     """Least Squared"""
+
     def __init__(self, name='leastsq'):
         Stat.__init__(self, name)
 
     @staticmethod
     def calc_staterror(data):
-        return numpy.ones_like(data)        
+        return numpy.ones_like(data)
 
     @staticmethod
     def calc_stat(data, model, staterror, syserror=None, weight=None):
         return _statfcts.calc_lsq_stat(data, model, staterror,
                                        syserror, weight, truncation_value)
-    
+
 
 class Chi2Gehrels(Chi2):
+
     """Chi Squared with Gehrels variance"""
+
     def __init__(self, name='chi2gehrels'):
         Chi2.__init__(self, name)
 
@@ -135,7 +149,9 @@ class Chi2Gehrels(Chi2):
 
 
 class Chi2ConstVar(Chi2):
+
     """Chi Squared with constant variance"""
+
     def __init__(self, name='chi2constvar'):
         Chi2.__init__(self, name)
 
@@ -143,7 +159,9 @@ class Chi2ConstVar(Chi2):
 
 
 class Chi2DataVar(Chi2):
+
     """Chi Squared with data variance"""
+
     def __init__(self, name='chi2datavar'):
         Chi2.__init__(self, name)
 
@@ -151,7 +169,9 @@ class Chi2DataVar(Chi2):
 
 
 class Chi2ModVar(Chi2):
+
     """Chi Squared with model amplitude variance"""
+
     def __init__(self, name='chi2modvar'):
         Chi2.__init__(self, name)
 
@@ -168,7 +188,9 @@ class Chi2ModVar(Chi2):
 
 
 class Chi2XspecVar(Chi2):
+
     """Chi Squared with data variance (XSPEC style)"""
+
     def __init__(self, name='chi2xspecvar'):
         Chi2.__init__(self, name)
 
@@ -180,10 +202,10 @@ class UserStat(Stat):
     def __init__(self, statfunc=None, errfunc=None, name='userstat'):
         self._statfuncset = False
         self.statfunc = (lambda x: None)
-        
+
         self._staterrfuncset = False
         self.errfunc = (lambda x: None)
-        
+
         if statfunc is not None:
             self.statfunc = statfunc
             self._statfuncset = True
@@ -191,10 +213,8 @@ class UserStat(Stat):
         if errfunc is not None:
             self.errfunc = errfunc
             self._staterrfuncset = True
-            
 
         Stat.__init__(self, name)
-
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -209,26 +229,22 @@ class UserStat(Stat):
     def __setstate__(self, state):
         # Populate the function pointers we deleted at pickle time with
         # no-ops.
-        self.__dict__['statfunc']=(lambda x: None)
-        self.__dict__['errfunc']=(lambda x: None)
+        self.__dict__['statfunc'] = (lambda x: None)
+        self.__dict__['errfunc'] = (lambda x: None)
         self.__dict__.update(state)
-
 
     def set_statfunc(self, func):
         self.statfunc = func
         self._statfuncset = True
 
-
     def set_errfunc(self, func):
         self.errfunc = func
         self._staterrfuncset = True
-
 
     def calc_staterror(self, data):
         if not self._staterrfuncset:
             raise StatErr('nostat', self.name, 'calc_staterror()')
         return self.errfunc(data)
-
 
     def calc_stat(self, data, model, staterror=None, syserror=None,
                   weight=None):

@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -32,9 +32,9 @@ class test_plot(SherpaTestCase):
         logger.setLevel(logging.ERROR)
 
         self.data = DataPHA('', numpy.arange(10), numpy.ones(10),
-                            bin_lo = numpy.arange(0.1, 10, 0.1),
-                            bin_hi = numpy.arange(0.2, 10.1, 0.1) )
-        self.data.units="energy"
+                            bin_lo=numpy.arange(0.1, 10, 0.1),
+                            bin_hi=numpy.arange(0.2, 10.1, 0.1))
+        self.data.units = "energy"
         self.src = PowLaw1D('p1')*AbsorptionGaussian('abs1')
 
     def tearDown(self):
@@ -43,4 +43,4 @@ class test_plot(SherpaTestCase):
     def test_sourceplot(self):
         sp = SourcePlot()
         sp.prepare(self.data, self.src)
-        #sp.plot()
+        # sp.plot()

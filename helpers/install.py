@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2014  Smithsonian Astrophysical Observatory
 #
 #
@@ -23,7 +23,9 @@ import os
 
 from deps import build_deps
 
+
 class install(_install):
+
     def run(self):
         if not os.path.exists('extern/built'):
             configure = self.get_finalized_command('sherpa_config', True).build_configure()

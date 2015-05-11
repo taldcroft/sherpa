@@ -1,4 +1,4 @@
-# 
+#
 #  Copyright (C) 2007  Smithsonian Astrophysical Observatory
 #
 #
@@ -24,30 +24,35 @@ import sherpa.image.DS9
 from sherpa.utils import SherpaTestCase
 
 # Create a 10x10 array for the tests.
+
+
 class Data(object):
+
     def __init__(self):
         self.name = None
-        self.y = numpy.arange(0,(10*10)/2,0.5)
-        self.y = self.y.reshape(10,10)
+        self.y = numpy.arange(0, (10*10)/2, 0.5)
+        self.y = self.y.reshape(10, 10)
         self.eqpos = None
         self.sky = None
 
-    def get_img(self,model=None):
+    def get_img(self, model=None):
         if model is not None:
             return (self.y, self.y)
         else:
             return self.y
-        
+
 data = Data()
+
 
 def get_arr_from_imager(im):
     # DS9 returns data as unordered string
     # Turn it into a 10x10 array
     data_out = im.xpaget("data image 1 1 10 10 yes")
     data_out = data_out.split()
-    data_out = numpy.array(data_out).reshape(10,10)
+    data_out = numpy.array(data_out).reshape(10, 10)
     data_out = numpy.float_(data_out)
     return data_out
+
 
 class test_image(SherpaTestCase):
     if (os.environ.has_key("DISPLAY") == True):
@@ -56,14 +61,14 @@ class test_image(SherpaTestCase):
             im.doOpen()
             im.showArray(data.y)
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             self.assertEqualWithinTol((data.y - data_out).sum(), 0.0, 1e-4)
 
         def test_image(self):
             im = Image()
             im.image(data.y)
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             self.assertEqualWithinTol((data.y - data_out).sum(), 0.0, 1e-4)
 
         def test_data_image(self):
@@ -71,7 +76,7 @@ class test_image(SherpaTestCase):
             im.prepare_image(data)
             im.image()
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             self.assertEqualWithinTol((data.y - data_out).sum(), 0.0, 1e-4)
 
         def test_model_image(self):
@@ -79,7 +84,7 @@ class test_image(SherpaTestCase):
             im.prepare_image(data, 1)
             im.image()
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             self.assertEqualWithinTol((data.y - data_out).sum(), 0.0, 1e-4)
 
         def test_ratio_image(self):
@@ -87,7 +92,7 @@ class test_image(SherpaTestCase):
             im.prepare_image(data, 1)
             im.image()
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             # The sum is 99, because the first model pixel
             # will be zero, and therefore the ratio function
             # reassigns the ratio there to be one.
@@ -98,7 +103,7 @@ class test_image(SherpaTestCase):
             im.prepare_image(data, 1)
             im.image()
             data_out = get_arr_from_imager(im)
-            im.xpaset("quit") 
+            im.xpaset("quit")
             self.assertEqualWithinTol(data_out.sum(), 0.0, 1e-4)
     else:
         pass
